@@ -19,13 +19,9 @@ public class AbilityManager : MonoBehaviour
 
 
     public string abilityClass;//Attack, Healing, Protection...
-    public string abilityType;// aim, targeted
+    public string abilityType;// instant, active, continuous
     public int abilityLevel;
 
     public GameObject icon;
 
-    public void ActivateAbility()
-    {
-        Debug.Log(abilityName + " should activate here");
-    }
 }

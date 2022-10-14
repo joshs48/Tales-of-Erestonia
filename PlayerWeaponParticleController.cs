@@ -7,12 +7,13 @@ using UnityEngine.Animations.Rigging;
 
 public class PlayerWeaponParticleController : StateMachineBehaviour
 {
-    
-   
+
+
     private int weaponR;
     private int weaponL;
     private bool isMagic;
     private int spell;
+    private int ability;
     public GameObject arrow;
     public GameObject bolt;
     public GameObject player;
@@ -31,7 +32,8 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
         weaponL = animator.GetInteger("WeaponL");
         isMagic = animator.GetBool("IsMagician");
         spell = animator.GetInteger("Spell");
-        
+        ability = animator.GetInteger("Ability");
+
         if (weaponL == 3)
         {
 
@@ -118,36 +120,45 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
             player = animator.gameObject;
             animator.gameObject.GetComponent<StatsManager>().StartCoroutine(StowLute(ShootDelay, animator.gameObject));
         }
-        if (isMagic)
+        switch (spell)
         {
-            switch (spell)
-            {
-                case 1://fireball
-                case 4://blue fireball
-                    animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").gameObject, animator.gameObject));
-                    break;
-                case 2://ice explosion
-                case 7://crystal explosion
-                case 9://rock explosion
-                case 11://vine explosion
-                    animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.GetComponent<PlayerControl>().FindNearestEnemy().gameObject, animator.gameObject));
-                    break;
-                case 3://ice path
-                case 8://crystal path
-                case 10://rock path
-                case 12://vine path
-                    animator.gameObject.GetComponent<StatsManager>().StartCoroutine(ShardPath(ShootDelay, createParticle1, animator.gameObject));
-                    break;
-                case 5://power beam
-                    animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").gameObject, animator.gameObject));
-                    break;
-                case 6://lightning strike
-                    animator.gameObject.GetComponent<StatsManager>().StartCoroutine(Lightning(ShootDelay, createParticle1, animator.gameObject.GetComponent<PlayerControl>().FindNearestEnemy().gameObject, animator.gameObject));
-                    break;
-                
+            case 1://fireball
+            case 4://blue fireball
+                animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").gameObject, animator.gameObject));
+                break;
+            case 2://ice explosion
+            case 7://crystal explosion
+            case 9://rock explosion
+            case 11://vine explosion
+                animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.GetComponent<PlayerControl>().FindNearestEnemy().gameObject, animator.gameObject));
+                break;
+            case 3://ice path
+            case 8://crystal path
+            case 10://rock path
+            case 12://vine path
+                animator.gameObject.GetComponent<StatsManager>().StartCoroutine(ShardPath(ShootDelay, createParticle1, animator.gameObject));
+                break;
+            case 5://power beam
+                animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").gameObject, animator.gameObject));
+                break;
+            case 6://lightning strike
+                animator.gameObject.GetComponent<StatsManager>().StartCoroutine(Lightning(ShootDelay, createParticle1, animator.gameObject.GetComponent<PlayerControl>().FindNearestEnemy().gameObject, animator.gameObject));
+                break;
 
-            }
+
         }
+
+        switch (ability)
+        {
+            case 1://fire blast
+                animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.transform.Find("Root").transform.Find("Hips").transform.Find("UpperLeg_R").transform.Find("LowerLeg_R").transform.Find("Ankle_R").transform.Find("Ball_R").gameObject, animator.gameObject));
+
+                break;
+        }
+
+        animator.SetInteger("Spell", 0);
+        animator.SetInteger("Ability", 0);
+
     }
 
 
@@ -360,11 +371,18 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
 
         yield return new WaitForSeconds(delay);
         GameObject newProjectile = null;
-        
+
         if (!projectile.name.Equals("Magic_Blast_03_Red_FX"))
         {
-            newProjectile = Instantiate(projectile, startPos.transform.position, startRot.transform.rotation);
 
+            if (projectile.name.Equals("Fire Blast"))
+            {
+                newProjectile = Instantiate(projectile, new Vector3(startPos.transform.position.x, 0.05f, startPos.transform.position.z), startRot.transform.rotation);
+            }
+            else
+            {
+                newProjectile = Instantiate(projectile, startPos.transform.position, startRot.transform.rotation);
+            }
         }
         else
         {
@@ -376,13 +394,26 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
         }
         //GameObject newProjectile = Instantiate(projectile, startPos.transform.position, startRot.transform.rotation);
         PlayerProjectileManager ppm = newProjectile.AddComponent<PlayerProjectileManager>();
-        SpellManager sm = newProjectile.GetComponent<SpellManager>();
+        if (newProjectile.GetComponent<SpellManager>() != null)
+        {
+            SpellManager sm = newProjectile.GetComponent<SpellManager>();
+            ppm.damageVal = sm.damageVal;
+            ppm.damageEffects = sm.damageEffects;
+            ppm.EffectDuration = sm.effectDuration;
+            ppm.DamagePerSec = sm.damagePerSec;
+            ppm.damageEffect = sm.damageEffect;
+        } else
+        {
+            AbilityManager am = newProjectile.GetComponent<AbilityManager>();
+            ppm.damageVal = am.damageVal;
+            ppm.damageEffects = am.damageEffects;
+            ppm.EffectDuration = am.effectDuration;
+            ppm.DamagePerSec = am.damagePerSec;
+            ppm.damageEffect = am.damageEffect;
+        }
 
-        ppm.damageVal = sm.damageVal;
-        ppm.damageEffects = sm.damageEffects;
-        ppm.EffectDuration = sm.effectDuration;
-        ppm.DamagePerSec = sm.damagePerSec;
-        ppm.damageEffect = sm.damageEffect;
+
+          
     }
 
     IEnumerator ShardPath(float delay, GameObject shard, GameObject start)
@@ -434,13 +465,13 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
         yield return new WaitForSeconds(delay);
         GameObject newProjectile = null;
 
-        
+
         newProjectile = Instantiate(particles);
         newProjectile.transform.position = startPos.transform.position;
 
 
 
-        
+
         //GameObject newProjectile = Instantiate(projectile, startPos.transform.position, startRot.transform.rotation);
         PlayerProjectileManager ppm = newProjectile.transform.Find("FX_LightningStrike_Impact_01").gameObject.AddComponent<PlayerProjectileManager>();
         SpellManager sm = newProjectile.GetComponent<SpellManager>();

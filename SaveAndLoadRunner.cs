@@ -253,6 +253,10 @@ public class SaveAndLoadRunner : MonoBehaviour
                 case "Islebury":
                     player.transform.position = startPos[0];
                     break;
+                case "Goblin Cave":
+                    player.transform.position = startPos[2];
+                    player.transform.eulerAngles = new Vector3(0, 180, 0);
+                    break;
             }
             player.GetComponent<PlayerControl>().enabled = true;
             player.GetComponent<BaseCharacter>().enabled = true;

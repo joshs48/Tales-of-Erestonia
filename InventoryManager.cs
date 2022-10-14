@@ -146,7 +146,8 @@ public class InventoryManager : MonoBehaviour
         else if (clothing != null)
         {
             clothingInv.Add(clothing);
-        } else if (ability != null)
+        }
+        else if (ability != null)
         {
             abilityInv.Add(ability);
         }
@@ -161,7 +162,8 @@ public class InventoryManager : MonoBehaviour
                 if (weapon != null)
                 {
                     activeWeaponR = weapon.GetComponent<ItemManager>();
-                } else
+                }
+                else
                 {
                     activeWeaponR = null;
                 }
@@ -215,7 +217,7 @@ public class InventoryManager : MonoBehaviour
                 clothingObj = modCharLevel.transform.Find("Head Coverings").Find("No Facial Hair").Find(clothing.clothingName).gameObject;
 
                 activeHead = clothingObj.GetComponent<ClothingManager>();
-                
+
                 activeFace.SetActive(true);
                 if (activeFacialHair != null && activeFacialHair.gameObject != null)
                 {
@@ -246,7 +248,7 @@ public class InventoryManager : MonoBehaviour
 
                 }
                 break;
-            
+
             case ClothingManager.ClothingSlot.Helmet:
                 if (activeFace != null)
                 {
@@ -320,7 +322,7 @@ public class InventoryManager : MonoBehaviour
                 }
                 clothingObj = modCharLevel.transform.Find("Legs").Find(clothing.clothingName).gameObject;
                 clothingObj.SetActive(true);
-                
+
                 activeLegs = clothingObj.GetComponent<ClothingManager>();
                 clothingObj = clothingObj.transform.Find(GameObject.Find("Player").GetComponent<StatsManager>().bodyType.ToString()).gameObject;
 
@@ -338,10 +340,10 @@ public class InventoryManager : MonoBehaviour
                 }
                 clothingObj = modCharLevel.transform.Find("Boots").Find(clothing.clothingName).gameObject;
                 clothingObj.SetActive(true);
-                
+
                 activeBoots = clothingObj.GetComponent<ClothingManager>();
                 clothingObj = clothingObj.transform.Find(GameObject.Find("Player").GetComponent<StatsManager>().bodyType.ToString()).gameObject;
-                
+
                 break;
 
         }
@@ -350,7 +352,8 @@ public class InventoryManager : MonoBehaviour
 
     public void SetClothingActiveLite(string clothingName, ClothingManager.ClothingSlot slot)
     {
-        if (clothingName == "") {
+        if (clothingName == "")
+        {
             return;
         }
         GameObject clothingObj = null;
@@ -367,7 +370,7 @@ public class InventoryManager : MonoBehaviour
                 }
                 clothingObj = modCharLevel.transform.Find("Faces").Find(clothingName).gameObject;
                 clothingObj.SetActive(true);
-                
+
                 clothingObj = clothingObj.transform.Find(GameObject.Find("Player").GetComponent<StatsManager>().bodyType.ToString()).gameObject;
                 activeFace = clothingObj.transform.parent.gameObject;
                 break;
@@ -378,7 +381,7 @@ public class InventoryManager : MonoBehaviour
                 }
                 clothingObj = modCharLevel.transform.Find("Hair").Find(clothingName).gameObject;
                 clothingObj.SetActive(true);
-                
+
                 activeHair = clothingObj.gameObject;
                 break;
             case ClothingManager.ClothingSlot.Facial_Hair:
@@ -388,10 +391,10 @@ public class InventoryManager : MonoBehaviour
                 }
                 clothingObj = modCharLevel.transform.Find("Facial Hair").Find(clothingName).gameObject;
                 clothingObj.SetActive(true);
-                
+
                 activeFacialHair = clothingObj.gameObject;
                 break;
-            
+
         }
         clothingObj.SetActive(true);
 
@@ -407,8 +410,8 @@ public class InventoryManager : MonoBehaviour
     }
     public void SetStartFace()
     {
-        SetClothingActiveLite(startFace.name, ClothingManager.ClothingSlot.Face); 
-        
+        SetClothingActiveLite(startFace.name, ClothingManager.ClothingSlot.Face);
+
     }
 
     public void SetStartTorso()
@@ -425,8 +428,11 @@ public class InventoryManager : MonoBehaviour
             {
                 torsoIcon = startTorso.femaleIcon;
             }
+
             GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Torso slot").GetChild(0).gameObject.SetActive(false);
+
             Instantiate(torsoIcon, GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Torso slot"));
+
         }
     }
 
@@ -445,8 +451,11 @@ public class InventoryManager : MonoBehaviour
             {
                 handsIcon = startHands.femaleIcon;
             }
+
             GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Hands slot").GetChild(0).gameObject.SetActive(false);
+
             Instantiate(handsIcon, GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Hands slot"));
+
         }
     }
 
@@ -464,6 +473,7 @@ public class InventoryManager : MonoBehaviour
             {
                 legsIcon = startLegs.femaleIcon;
             }
+
             GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Legs slot").GetChild(0).gameObject.SetActive(false);
             Instantiate(legsIcon, GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Legs slot"));
         }
@@ -527,12 +537,12 @@ public class InventoryManager : MonoBehaviour
         {
             GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActiveLite(activeFacialHair.name, ClothingManager.ClothingSlot.Facial_Hair);
         }
-        if (activeHair!= null)
+        if (activeHair != null)
         {
             GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActiveLite(activeHair.name, ClothingManager.ClothingSlot.Hair);
         }
 
-        switch(GetComponent<StatsManager>().Race)
+        switch (GetComponent<StatsManager>().Race)
         {
             case StatsManager.Races.Tiefling:
                 GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").transform.Find("Modular Characters").Find("Head Attachments").Find("Long Bent Ear").gameObject.SetActive(true);

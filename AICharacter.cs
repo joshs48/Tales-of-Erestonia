@@ -447,7 +447,6 @@ public class AICharacter : MonoBehaviour
         {
             shield = true;
         }
-        Debug.Log("cooling");
         yield return new WaitForSeconds(cooldown + UnityEngine.Random.Range(-1, 2));
         if (anim.GetInteger("Weapon Type") == 9)
         {
@@ -517,18 +516,15 @@ public class AICharacter : MonoBehaviour
         Collider[] rangeChecks = Physics.OverlapSphere(transform.position, radius, targetMask);
         if (rangeChecks.Length != 0)
         {
-            Debug.Log("1");
             Transform target = rangeChecks[0].transform;
             Vector3 directionToTarget = (target.position - transform.position).normalized;
             if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
             {
-                Debug.Log("2");
 
                 float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
                 if (!Physics.Raycast(transform.Find("Root").transform.Find("Hips").position, directionToTarget, distanceToTarget, obstructionMask))
                 {
-                    Debug.Log("3");
 
                     canSeePlayer = true;
                     this.target = playerRef.transform;

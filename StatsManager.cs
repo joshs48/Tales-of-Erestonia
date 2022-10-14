@@ -92,18 +92,32 @@ public class StatsManager : MonoBehaviour
     [SerializeField] Color[] BardColors;//primary, secondary
     [SerializeField] ItemManager[] BardBaseItems;
     [SerializeField] SpellManager[] BardBaseSpells;
+    [SerializeField] ClothingManager[] BardExtraClothes;
+
 
     [SerializeField] ClothingManager[] DruidBaseClothes;
     [SerializeField] GameObject[] DruidBaseliteClothes;
     [SerializeField] Color[] DruidColors;//primary, secondary
+    [SerializeField] ItemManager[] DruidBaseItems;
+    [SerializeField] SpellManager[] DruidBaseSpells;
+    [SerializeField] ClothingManager[] DruidExtraClothes;
+
 
     [SerializeField] ClothingManager[] WarlockBaseClothes;
     [SerializeField] GameObject[] WarlockBaseliteClothes;
     [SerializeField] Color[] WarlockColors;//primary, secondary
+    [SerializeField] ItemManager[] WarlockBaseItems;
+    [SerializeField] SpellManager[] WarlockBaseSpells;
+    [SerializeField] ClothingManager[] WarlockExtraClothes;
+
 
     [SerializeField] ClothingManager[] WizardBaseClothes;
     [SerializeField] GameObject[] WizardBaseliteClothes;
     [SerializeField] Color[] WizardColors;//primary, secondary
+    [SerializeField] ItemManager[] WizardBaseItems;
+    [SerializeField] SpellManager[] WizardBaseSpells;
+    [SerializeField] ClothingManager[] WizardExtraClothes;
+
 
     [SerializeField] ClothingManager[] FighterBaseClothes;
     [SerializeField] GameObject[] FighterBaseliteClothes;
@@ -140,10 +154,15 @@ public class StatsManager : MonoBehaviour
 
     [SerializeField] Material playerMat;
     [SerializeField] Color[] tieflingColors;//hair, skin, stubble, scar, eyes, bodyart
+    [SerializeField] AbilityManager[] TieflingBaseAbilities;
     [SerializeField] Color[] elfColors;
+    [SerializeField] AbilityManager[] ElfBaseAbilities;
     [SerializeField] Color[] bremriColors;
+    [SerializeField] AbilityManager[] BremriBaseAbilities;
     [SerializeField] Color[] humanSkins;
     [SerializeField] Color[] humanColors;
+    [SerializeField] AbilityManager[] HumanBaseAbilities;
+
 
     private InventoryManager inv;
 
@@ -183,6 +202,10 @@ public class StatsManager : MonoBehaviour
         Level = 1;
         XP = 0;
         ClothingManager[] clothes = null;
+        ClothingManager[] extraClothes = null;
+        ItemManager[] items = null;
+        SpellManager[] spells = null;
+        AbilityManager[] abilities = null;
         GameObject[] liteClothes = null;
         switch (Class)
         {
@@ -198,6 +221,9 @@ public class StatsManager : MonoBehaviour
                 clothes = BardBaseClothes;
                 liteClothes = BardBaseliteClothes;
                 usableWeapons.Add(Weapons.Sword);
+                items = BardBaseItems;
+                spells = BardBaseSpells;
+                extraClothes = BardExtraClothes;
                 break;
             case Classes.Druid:
                 maxHealth += 8;
@@ -211,10 +237,14 @@ public class StatsManager : MonoBehaviour
                 clothes = DruidBaseClothes;
                 liteClothes = DruidBaseliteClothes;
                 usableWeapons.Add(Weapons.Staff);
+                items = DruidBaseItems;
+                spells = DruidBaseSpells;
+                extraClothes = DruidExtraClothes;
+
                 break;
             case Classes.Warlock:
-                maxHealth += 7;
-                health += 7;
+                maxHealth += 70;//TODO just 7 not 70
+                health += 70;
                 STR += 0;
                 DEX += 1;
                 CON += -1;
@@ -223,6 +253,10 @@ public class StatsManager : MonoBehaviour
                 CHA += 2;
                 clothes = WarlockBaseClothes;
                 liteClothes = WarlockBaseliteClothes;
+                items = WarlockBaseItems;
+                spells = WarlockBaseSpells;
+                extraClothes = WarlockExtraClothes;
+
                 break;
             case Classes.Wizard:
                 maxHealth += 6;
@@ -236,6 +270,10 @@ public class StatsManager : MonoBehaviour
                 clothes = WizardBaseClothes;
                 liteClothes = WizardBaseliteClothes;
                 usableWeapons.Add(Weapons.Staff);
+                items = WizardBaseItems;
+                spells = WizardBaseSpells;
+                extraClothes = WizardExtraClothes;
+
                 break;
             case Classes.Fighter:
                 maxHealth += 12;
@@ -352,6 +390,20 @@ public class StatsManager : MonoBehaviour
             inv.addItem(null, null, null, clothing, null);
             inv.SetClothingActive(clothing);
         }
+        foreach (ClothingManager clothing in extraClothes)
+        {
+            inv.addItem(null, null, null, clothing, null);
+        }
+        foreach (ItemManager item in items)
+        {
+            inv.addItem(item, null, null, null, null);
+        }
+        foreach (SpellManager spell in spells)
+        {
+            inv.spellInv.Add(spell);
+        }
+
+
         inv.SetClothingActiveLite(liteClothes[0].name, ClothingManager.ClothingSlot.Face);
         if (liteClothes[1] != null)
         {
@@ -383,6 +435,7 @@ public class StatsManager : MonoBehaviour
                 INT += 1;
                 WIS += 1;
                 CHA += 1;
+                abilities = TieflingBaseAbilities;
                 break;
             case Races.Elf:
                 transform.Find("Modular Characters").Find("Head Attachments").Find("Long Straight Ear").gameObject.SetActive(true);
@@ -404,6 +457,7 @@ public class StatsManager : MonoBehaviour
                 CHA += -1;
                 usableWeapons.Add(Weapons.Bow);
                 ChangeSpeed(1);
+                abilities = ElfBaseAbilities;
                 break;
             case Races.Human:
                 humanColors[1] = humanSkins[Random.Range(0, 4)];
@@ -423,6 +477,7 @@ public class StatsManager : MonoBehaviour
                 WIS += 0;
                 CHA += -1;
                 usableWeapons.Add(Weapons.Axe);
+                abilities = HumanBaseAbilities;
                 break;
             case Races.Bremri:
                 transform.Find("Modular Characters").Find("Head Attachments").Find("Long Bent Ear").gameObject.SetActive(true);
@@ -444,8 +499,13 @@ public class StatsManager : MonoBehaviour
                 CHA += 0;
                 usableWeapons.Add(Weapons.Hammer);
                 ChangeSpeed(-1);
-
+                abilities = BremriBaseAbilities;
                 break;
+        }
+
+        foreach (AbilityManager ability in abilities)
+        {
+            inv.abilityInv.Add(ability);
         }
 
         switch (Class)

@@ -428,7 +428,7 @@ public class UIUpdater : MonoBehaviour
     static GameObject curQSSitem = null;
     public static void UpdateMagicBar()
     {
-        if (game.totalQSS <= 0)
+        if (game.totalQSS < 0)
         {
             return;
         }
@@ -472,6 +472,7 @@ public class UIUpdater : MonoBehaviour
                     switch (curQSSitem.GetComponent<IconManager>().Spell.spellClass)
                     {
                         case "Attack":
+
                             game.player.GetComponent<Animator>().SetTrigger("Magic Attack");
                             int spellVal = 0;
                             switch (curQSSitem.GetComponent<IconManager>().Spell.spellName)
@@ -524,32 +525,60 @@ public class UIUpdater : MonoBehaviour
 
     }
     //updates abilities
-    
+
     public static void UpdateAbilities()
     {
         InventoryManager inv = game.player.GetComponent<InventoryManager>();
 
-        
+
         if (inv.abilitiesActive[0] != null && game.prevAbility1Use != game.pc.ability1Use && game.pc.ability1Use)
         {
-            inv.abilitiesActive[0].ActivateAbility();
+            ActivateAbility(inv.abilitiesActive[0]);
         }
 
         if (inv.abilitiesActive[1] != null && game.prevAbility2Use != game.pc.ability2Use && game.pc.ability2Use)
         {
-            inv.abilitiesActive[1].ActivateAbility();
+            ActivateAbility(inv.abilitiesActive[1]);
 
         }
 
         if (inv.abilitiesActive[2] != null && game.prevAbility3Use != game.pc.ability3Use && game.pc.ability3Use)
         {
-            inv.abilitiesActive[2].ActivateAbility();
+            ActivateAbility(inv.abilitiesActive[2]);
 
         }
         game.prevAbility1Use = game.pc.ability1Use;
         game.prevAbility2Use = game.pc.ability2Use;
         game.prevAbility3Use = game.pc.ability3Use;
 
+    }
+
+    private static void ActivateAbility(AbilityManager ability)
+    {
+        switch (ability.abilityType)
+        {
+            case "Instant":
+
+                game.player.GetComponent<Animator>().SetTrigger("Use Ability");
+                int abilityVal = 0;
+                switch (ability.abilityName)
+                {
+                    case "Fire Blast":
+                        abilityVal = 1;
+                        break;
+    
+                }
+                game.player.GetComponent<Animator>().SetInteger("Ability", abilityVal);
+                break;
+
+            case "Active":
+                Debug.Log("Active abilities not set up yet");
+                break;
+
+            case "Continuous":
+                Debug.Log("Continuous abilities not set up yet");
+                break;
+        }
     }
 
     //Creates any notifications
@@ -566,6 +595,11 @@ public class UIUpdater : MonoBehaviour
 
         background.transform.localScale = new Vector3(text.Length * 100, background.transform.localScale.y, background.transform.localScale.z);
         game.StartCoroutine(NotificationDelay(1.5f, notification, distance));
+    }
+
+    public static void CreateLevelSelect()
+    {
+
     }
 
     private static IEnumerator OutlineNearestEnemy(int prevQSS)
