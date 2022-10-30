@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityStandardAssets.Characters.ThirdPerson;
-using UnityStandardAssets.CrossPlatformInput;
+
 
 public class ClimbController : MonoBehaviour
 {
@@ -189,7 +188,7 @@ public class ClimbController : MonoBehaviour
     }
 
     private void Climb()
-    {
+    {/*
         m_Animator.SetInteger("Climb Action", 0);
         if (CrossPlatformInputManager.GetButtonDown("Jump")) 
         {
@@ -212,7 +211,7 @@ public class ClimbController : MonoBehaviour
             FindAndGoToNearbyClimbAnchor("down", maxShimmyDistance, maxHopDistance);
         }
 
-
+        */
         
     }
 
@@ -248,9 +247,9 @@ public class ClimbController : MonoBehaviour
 
     IEnumerator DelayUntilGround()
     {
-        yield return new WaitUntil(() => isGrounded);
+        yield return new WaitUntil(() => isGrounded);/*
         GetComponent<ThirdPersonUserControl>().enabled = true;
-        GetComponent<ThirdPersonCharacter>().enabled = true;
+        GetComponent<ThirdPersonCharacter>().enabled = true;*/
     }
 
     IEnumerator DelayUntilGrabbedShimmy(GameObject anchor, string direction)

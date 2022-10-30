@@ -107,10 +107,7 @@ public class ItemManager : MonoBehaviour
  
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        
-    }
+
 
     private void Update()
     {

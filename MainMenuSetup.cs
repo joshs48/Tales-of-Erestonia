@@ -149,7 +149,7 @@ public class MainMenuSetup : MonoBehaviour
                 GameObject.Find("Canvas").transform.Find("Bottom Text").gameObject.SetActive(true);
                 GameObject.Find("Canvas").transform.Find("Bottom Text").GetComponent<TextMeshProUGUI>().text = "Ready to Continue?";
                 yield return new WaitUntil(() => GetComponent<PlayerControl>().jump);
-                GameObject.Find("SaveAndLoadRunner").GetComponent<SaveAndLoadRunner>().BeginLoading("Goblin Cave");
+                GameObject.Find("SaveAndLoadRunner").GetComponent<SaveAndLoadRunner>().BeginLoading("Islebury");
                 break;
             case 2:
                 Debug.Log("should there even be settings?");
@@ -488,7 +488,7 @@ public class MainMenuSetup : MonoBehaviour
         
         GameObject.Find("SaveAndLoadRunner").GetComponent<SaveAndLoadRunner>().save_game();
 
-        GameObject.Find("SaveAndLoadRunner").GetComponent<SaveAndLoadRunner>().BeginLoading("Goblin Cave");
+        GameObject.Find("SaveAndLoadRunner").GetComponent<SaveAndLoadRunner>().BeginLoading("Islebury");
 
 
 
