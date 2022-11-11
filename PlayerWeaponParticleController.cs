@@ -48,7 +48,7 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
             }
             else
             {
-                GameObject arrow = Instantiate(player.GetComponent<InventoryManager>().activeAmmo.gameObject, player.transform);
+                GameObject arrow = Instantiate(player.GetComponent<InventoryManager>().activeAmmo.prefab, player.transform);
 
                 arrow.transform.parent = player.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R");
                 arrow.transform.localPosition = player.transform.Find("Arrow Mount").localPosition;
@@ -88,7 +88,7 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
             }
             else
             {
-                GameObject bolt = Instantiate(player.GetComponent<InventoryManager>().activeAmmo.gameObject, player.transform);
+                GameObject bolt = Instantiate(player.GetComponent<InventoryManager>().activeAmmo.prefab, player.transform);
                 //GameObject.Find("Characters").transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").transform.Find(GameObject.Find("Player").GetComponent<CharacterAndWeaponController>().weaponR + "(Clone)").transform.Find("Root").transform.Find("String").transform.Find("Crossbow Bolt").gameObject.SetActive(true);
                 GameObject crossbow = player.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").transform.Find(player.GetComponent<InventoryManager>().activeWeaponR.gameObject.name + "(Clone)").gameObject;
 
@@ -181,7 +181,7 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
             player = GameObject.Find("Player");
             if (player.GetComponent<InventoryManager>().activeAmmoQs >= 0)
             {
-                GameObject arrow = player.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").transform.Find(player.GetComponent<InventoryManager>().activeAmmo.gameObject.name + "(Clone)").gameObject;
+                GameObject arrow = player.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").transform.Find(player.GetComponent<InventoryManager>().activeAmmo.name + "(Clone)").gameObject;
 
                 GameObject bow = player.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_L").transform.Find("Shoulder_L").transform.Find("Elbow_L").transform.Find("Hand_L").transform.Find(player.GetComponent<InventoryManager>().activeWeaponL.gameObject.name + "(Clone)").gameObject;
                 bow.GetComponent<Animation>().Play("Fire");
@@ -190,9 +190,9 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
                 arrow.transform.localScale = new Vector3(1, 1, 1);
 
                 PlayerProjectileManager ppm = arrow.AddComponent<PlayerProjectileManager>();
-                AmmoManager am = player.GetComponent<InventoryManager>().activeAmmo;
+                AmmoData am = player.GetComponent<InventoryManager>().activeAmmo;
 
-                ppm.damageVal = (int)(bow.GetComponent<ItemManager>().damageVal * am.damageMult);
+                ppm.damageVal = (int)(bow.GetComponent<Weapon>().data.damageVal * am.damageMult);
                 ppm.damageEffects = am.damageEffects;
                 ppm.EffectDuration = am.effectDuration;
                 ppm.DamagePerSec = am.damagePerSec;
@@ -230,7 +230,7 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
             player = GameObject.Find("Player");
             if (player.GetComponent<InventoryManager>().activeAmmoQs >= 0)
             {
-                GameObject bolt = player.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").transform.Find(player.GetComponent<InventoryManager>().activeWeaponR.gameObject.name + "(Clone)").transform.Find("Root").transform.Find("String").transform.Find(player.GetComponent<InventoryManager>().activeAmmo.gameObject.name + "(Clone)").gameObject;
+                GameObject bolt = player.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").transform.Find(player.GetComponent<InventoryManager>().activeWeaponR.gameObject.name + "(Clone)").transform.Find("Root").transform.Find("String").transform.Find(player.GetComponent<InventoryManager>().activeAmmo.name + "(Clone)").gameObject;
 
                 GameObject crossbow = player.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").transform.Find(player.GetComponent<InventoryManager>().activeWeaponR.gameObject.name + "(Clone)").gameObject;
                 crossbow.GetComponent<Animation>().Play("Fire");
@@ -239,9 +239,9 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
                 bolt.transform.localScale = new Vector3(1, 1, 1);
 
                 PlayerProjectileManager ppm = bolt.AddComponent<PlayerProjectileManager>();
-                ppm.damageVal = crossbow.GetComponent<ItemManager>().damageVal;
-                ppm.damageEffects = crossbow.GetComponent<ItemManager>().damageEffects;
-                ppm.damageEffect = crossbow.GetComponent<ItemManager>().damageEffect;
+                ppm.damageVal = crossbow.GetComponent<Weapon>().data.damageVal;
+                ppm.damageEffects = crossbow.GetComponent<Weapon>().data.damageEffects;
+                ppm.damageEffect = crossbow.GetComponent<Weapon>().data.damageEffect;
 
 
                 bolt.GetComponent<BoxCollider>().enabled = true;
@@ -377,7 +377,7 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
 
             if (projectile.name.Equals("Fire Blast"))
             {
-                newProjectile = Instantiate(projectile, new Vector3(startPos.transform.position.x, 0.05f, startPos.transform.position.z), startRot.transform.rotation);
+                newProjectile = Instantiate(projectile, new Vector3(startPos.transform.position.x, 0.05f, startPos.transform.position.z), startRot.transform.rotation); 
             }
             else
             {
@@ -388,15 +388,15 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
         {
             newProjectile = Instantiate(projectile);
             newProjectile.transform.position = startPos.transform.position;
-
-
-
         }
-        //GameObject newProjectile = Instantiate(projectile, startPos.transform.position, startRot.transform.rotation);
+
+        var collision = newProjectile.GetComponent<ParticleSystem>().collision;
+        collision.collidesWith |= (1 << 6);
+
         PlayerProjectileManager ppm = newProjectile.AddComponent<PlayerProjectileManager>();
-        if (newProjectile.GetComponent<SpellManager>() != null)
+        if (newProjectile.GetComponent<Spell>() != null)
         {
-            SpellManager sm = newProjectile.GetComponent<SpellManager>();
+            SpellData sm = newProjectile.GetComponent<Spell>().data;
             ppm.damageVal = sm.damageVal;
             ppm.damageEffects = sm.damageEffects;
             ppm.EffectDuration = sm.effectDuration;
@@ -404,7 +404,7 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
             ppm.damageEffect = sm.damageEffect;
         } else
         {
-            AbilityManager am = newProjectile.GetComponent<AbilityManager>();
+            AbilityData am = newProjectile.GetComponent<Ability>().data;
             ppm.damageVal = am.damageVal;
             ppm.damageEffects = am.damageEffects;
             ppm.EffectDuration = am.effectDuration;
@@ -422,8 +422,12 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
         GameObject newShards = Instantiate(shard, start.transform.position, start.transform.rotation, null);
         PlayerProjectileManager trailppm = newShards.transform.Find("FX_Shard" + newShards.name.Substring(0, newShards.name.IndexOf(" ")) + "_Smaller_Trail_01").gameObject.AddComponent<PlayerProjectileManager>();
         PlayerProjectileManager explosionppm = newShards.transform.Find("FX_Shard" + newShards.name.Substring(0, newShards.name.IndexOf(" ")) + "_Explosion_01").gameObject.AddComponent<PlayerProjectileManager>();
-        SpellManager trailsm = trailppm.gameObject.GetComponent<SpellManager>();
-        SpellManager explosionsm = trailppm.gameObject.GetComponent<SpellManager>();
+        SpellData trailsm = trailppm.gameObject.GetComponent<SpellData>();
+        SpellData explosionsm = trailppm.gameObject.GetComponent<SpellData>();
+        var collision = trailppm.gameObject.GetComponent<ParticleSystem>().collision;
+        collision.collidesWith |= (1 << 6);
+        collision = explosionppm.gameObject.GetComponent<ParticleSystem>().collision;
+        collision.collidesWith |= (1 << 6);
 
         trailppm.damageVal = trailsm.damageVal;
         trailppm.damageEffects = trailsm.damageEffects;
@@ -447,8 +451,10 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
         {
             GeyserPos = Vector3.MoveTowards(GeyserPos, target, distanceBetween);
             GameObject newGeyser = Instantiate(geyser, GeyserPos, Quaternion.Euler(0, 0, 0));
+            var collision = newGeyser.GetComponent<ParticleSystem>().collision;
+            collision.collidesWith |= (1 << 6);
             PlayerProjectileManager ppm = newGeyser.AddComponent<PlayerProjectileManager>();
-            SpellManager sm = newGeyser.GetComponent<SpellManager>();
+            SpellData sm = newGeyser.GetComponent<SpellData>();
 
             ppm.damageVal = sm.damageVal;
             ppm.damageEffects = sm.damageEffects;
@@ -465,16 +471,13 @@ public class PlayerWeaponParticleController : StateMachineBehaviour
         yield return new WaitForSeconds(delay);
         GameObject newProjectile = null;
 
-
         newProjectile = Instantiate(particles);
         newProjectile.transform.position = startPos.transform.position;
+        var collision = newProjectile.GetComponent<ParticleSystem>().collision;
+        collision.collidesWith |= (1 << 6);
 
-
-
-
-        //GameObject newProjectile = Instantiate(projectile, startPos.transform.position, startRot.transform.rotation);
         PlayerProjectileManager ppm = newProjectile.transform.Find("FX_LightningStrike_Impact_01").gameObject.AddComponent<PlayerProjectileManager>();
-        SpellManager sm = newProjectile.GetComponent<SpellManager>();
+        SpellData sm = newProjectile.GetComponent<SpellData>();
 
         ppm.damageVal = sm.damageVal;
         ppm.damageEffects = sm.damageEffects;

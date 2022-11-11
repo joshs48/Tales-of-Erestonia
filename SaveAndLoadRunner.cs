@@ -139,15 +139,15 @@ public class SaveAndLoadRunner : MonoBehaviour
 
             if (lod.activeWeaponR != null)
             {
-                inv.SetWeaponActive(lod.activeWeaponR.gameObject, "right");
+                inv.SetWeaponActive(lod.activeWeaponR.GetComponent<Weapon>().data, "right");
             }
             if (lod.activeWeaponL != null)
             {
-                inv.SetWeaponActive(lod.activeWeaponL.gameObject, "left");
+                inv.SetWeaponActive(lod.activeWeaponL.GetComponent<Weapon>().data, "left");
             }
             if (lod.activeAmmo != null)
             {
-                inv.SetWeaponActive(lod.activeAmmo.gameObject, "ammo");
+                inv.SetAmmoActive(lod.activeAmmo);
             }
             inv.activeAmmoQs = lod.activeAmmoQs;
 
@@ -159,35 +159,35 @@ public class SaveAndLoadRunner : MonoBehaviour
 
             if (lod.activeHead != null)
             {
-                inv.SetClothingActive(lod.activeHead);
+                inv.SetClothingActive(lod.activeHead.GetComponent<Clothing>().data);
             }
             if (lod.activeTorso != null)
             {
-                inv.SetClothingActive(lod.activeTorso);
+                inv.SetClothingActive(lod.activeTorso.GetComponent<Clothing>().data);
             }
             if (lod.activeHands != null)
             {
-                inv.SetClothingActive(lod.activeHands);
+                inv.SetClothingActive(lod.activeHands.GetComponent<Clothing>().data);
             }
             if (lod.activeLegs != null)
             {
-                inv.SetClothingActive(lod.activeLegs);
+                inv.SetClothingActive(lod.activeLegs.GetComponent<Clothing>().data);
             }
             if (lod.activeBoots)
             {
-                inv.SetClothingActive(lod.activeBoots);
+                inv.SetClothingActive(lod.activeBoots.GetComponent<Clothing>().data);
             }
             if (lod.activeFace != null)
             {
-                inv.SetClothingActiveLite(lod.activeFace.name, ClothingManager.ClothingSlot.Face);
+                inv.SetClothingActiveLite(lod.activeFace.name, ClothingData.ClothingSlot.Face);
             }
             if (lod.activeHair != null)
             {
-                inv.SetClothingActiveLite(lod.activeHair.name, ClothingManager.ClothingSlot.Hair);
+                inv.SetClothingActiveLite(lod.activeHair.name, ClothingData.ClothingSlot.Hair);
             }
             if (lod.activeFacialHair != null)
             {
-                inv.SetClothingActiveLite(lod.activeFacialHair.name, ClothingManager.ClothingSlot.Facial_Hair);
+                inv.SetClothingActiveLite(lod.activeFacialHair.name, ClothingData.ClothingSlot.Facial_Hair);
             }
 
             switch (lod.playerRace)
@@ -321,33 +321,33 @@ public class SaveData
     public int WIS;
     public int CHA;
 
-    public List<ItemManager> weaponInv = new List<ItemManager>();
-    public List<AmmoManager> ammoInv = new List<AmmoManager>();
-    public List<ItemManager> gearInv = new List<ItemManager>();
-    public List<SpellManager> spellInv = new List<SpellManager>();
-    public List<ClothingManager> clothingInv = new List<ClothingManager>();
+    public List<WeaponData> weaponInv = new List<WeaponData>();
+    public List<AmmoData> ammoInv = new List<AmmoData>();
+    public List<GearData> gearInv = new List<GearData>();
+    public List<SpellData> spellInv = new List<SpellData>();
+    public List<ClothingData> clothingInv = new List<ClothingData>();
 
 
     public List<int> gearQs = new List<int>();
     public List<int> ammoQs = new List<int>();
 
-    public ItemManager activeWeaponR;
-    public ItemManager activeWeaponL;
-    public AmmoManager activeAmmo;
+    public GameObject activeWeaponR;
+    public GameObject activeWeaponL;
+    public AmmoData activeAmmo;
     public int activeAmmoQs;
 
-    public List<ItemManager> gearActive = new List<ItemManager>();// [0], [1], [2]...
+    public List<GearData> gearActive = new List<GearData>();// [0], [1], [2]...
     public List<int> gearActiveQs = new List<int>();
 
-    public List<SpellManager> spellsActive = new List<SpellManager>();
+    public List<SpellData> spellsActive = new List<SpellData>();
     public List<int> spellQuantitiesBylvl = new List<int>();
 
 
-    public ClothingManager activeHead;
-    public ClothingManager activeTorso;
-    public ClothingManager activeHands;
-    public ClothingManager activeLegs;
-    public ClothingManager activeBoots;
+    public GameObject activeHead;
+    public GameObject activeTorso;
+    public GameObject activeHands;
+    public GameObject activeLegs;
+    public GameObject activeBoots;
 
     public GameObject activeFace;
     public GameObject activeHair;

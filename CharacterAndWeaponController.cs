@@ -152,14 +152,14 @@ public class CharacterAndWeaponController : MonoBehaviour
 
         
     }
-    public void setWeapons(GameObject newRWeapon, GameObject newLWeapon)
+    public void setWeapons(WeaponData newRWeapon, WeaponData newLWeapon)
     {
 
         if (newRWeapon != null)
         {
             
-            weaponRType = newRWeapon.GetComponent<ItemManager>().itemType.ToString();
-            weaponRObject = Instantiate(newRWeapon, transform);
+            weaponRType = newRWeapon.weaponType.ToString();
+            weaponRObject = Instantiate(newRWeapon.prefab, transform);
             weaponRObject.SetActive(true);
             weaponRObject.transform.parent = transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R");
             weaponRObject.transform.localPosition = transform.Find(weaponRType + " Mount").localPosition;
@@ -202,8 +202,8 @@ public class CharacterAndWeaponController : MonoBehaviour
         if (newLWeapon != null)
         {
             
-            weaponLType = newLWeapon.GetComponent<ItemManager>().itemType.ToString();
-            weaponLObject = Instantiate(newLWeapon, transform);
+            weaponLType = newLWeapon.weaponType.ToString();
+            weaponLObject = Instantiate(newLWeapon.prefab, transform);
             weaponLObject.SetActive(true);
 
             float xVal = weaponLObject.transform.localPosition.x;

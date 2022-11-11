@@ -6,35 +6,35 @@ using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
-    public List<ItemManager> weaponInv = new List<ItemManager>();
-    public List<AmmoManager> ammoInv = new List<AmmoManager>();
-    public List<ItemManager> gearInv = new List<ItemManager>();
-    public List<SpellManager> spellInv = new List<SpellManager>();
-    public List<ClothingManager> clothingInv = new List<ClothingManager>();
-    public List<AbilityManager> abilityInv = new List<AbilityManager>();
+    public List<WeaponData> weaponInv = new List<WeaponData>();
+    public List<AmmoData> ammoInv = new List<AmmoData>();
+    public List<GearData> gearInv = new List<GearData>();
+    public List<SpellData> spellInv = new List<SpellData>();
+    public List<ClothingData> clothingInv = new List<ClothingData>();
+    public List<AbilityData> abilityInv = new List<AbilityData>();
 
 
     public List<int> gearQs = new List<int>();
     public List<int> ammoQs = new List<int>();
 
-    public ItemManager activeWeaponR;
-    public ItemManager activeWeaponL;
-    public AmmoManager activeAmmo;
+    public GameObject activeWeaponR;
+    public GameObject activeWeaponL;
+    public AmmoData activeAmmo;
     public int activeAmmoQs;
 
-    public List<ItemManager> gearActive = new List<ItemManager>();// [0], [1], [2]...
+    public List<GearData> gearActive = new List<GearData>();// [0], [1], [2]...
     public List<int> gearActiveQs = new List<int>();
 
-    public List<SpellManager> spellsActive = new List<SpellManager>();
+    public List<SpellData> spellsActive = new List<SpellData>();
     public List<int> spellQuantitiesBylvl = new List<int>();
 
-    public List<AbilityManager> abilitiesActive = new List<AbilityManager>(3);
+    public List<AbilityData> abilitiesActive = new List<AbilityData>(3);
 
-    public ClothingManager activeHead;
-    public ClothingManager activeTorso;
-    public ClothingManager activeHands;
-    public ClothingManager activeLegs;
-    public ClothingManager activeBoots;
+    public GameObject activeHead;
+    public GameObject activeTorso;
+    public GameObject activeHands;
+    public GameObject activeLegs;
+    public GameObject activeBoots;
 
     public GameObject activeFace;
     public GameObject activeHair;
@@ -45,10 +45,10 @@ public class InventoryManager : MonoBehaviour
     public int maxGear = 10;//TODO change these later!!
 
     public GameObject startFace;
-    public ClothingManager startTorso;
-    public ClothingManager startHands;
-    public ClothingManager startLegs;
-    public ClothingManager startBoots;
+    public ClothingData startTorso;
+    public ClothingData startHands;
+    public ClothingData startLegs;
+    public ClothingData startBoots;
 
     public List<GameObject> facesMale;
     public List<GameObject> facesFemale;
@@ -56,12 +56,12 @@ public class InventoryManager : MonoBehaviour
     public List<GameObject> facialHair;
     public List<GameObject> clothingColors;
 
-    public List<GameObject> testWeapons;
-    public List<GameObject> testAmmos;
-    public List<GameObject> testGear;
-    public List<GameObject> testSpells;
-    public List<GameObject> testClothing;
-    public List<GameObject> testAbilities;
+    public List<WeaponData> testWeapons;
+    public List<AmmoData> testAmmos;
+    public List<GearData> testGear;
+    public List<SpellData> testSpells;
+    public List<ClothingData> testClothing;
+    public List<AbilityData> testAbilities;
 
     public bool isActualPlayer;
 
@@ -69,91 +69,83 @@ public class InventoryManager : MonoBehaviour
     {
         SetStartClothes();
 
-        foreach (GameObject gameObject in testWeapons)
+        foreach (WeaponData weapon in testWeapons)
         {
-            addItem(gameObject.GetComponent<ItemManager>(), null, null, null, null);
+            addWeapon(weapon);
         }
-        foreach (GameObject gameObject in testAmmos)
+
+        foreach (AmmoData ammo in testAmmos)
         {
-            addItem(null, gameObject.GetComponent<AmmoManager>(), null, null, null);
+            addAmmo(ammo);
         }
-        foreach (GameObject gameObject in testGear)
+        foreach (GearData gear in testGear)
         {
-            addItem(gameObject.GetComponent<ItemManager>(), null, null, null, null);
+            addGear(gear);
         }
-        foreach (GameObject gameObject in testSpells)
+        foreach (SpellData spell in testSpells)
         {
-            addItem(null, null, gameObject.GetComponent<SpellManager>(), null, null);
+            addSpell(spell);
         }
-        foreach (GameObject gameObject in testClothing)
+        foreach (ClothingData clothing in testClothing)
         {
-            addItem(null, null, null, gameObject.GetComponent<ClothingManager>(), null);
+            addClothing(clothing);
         }
-        foreach (GameObject gameObject in testAbilities)
+        foreach (AbilityData ability in testAbilities)
         {
-            addItem(null, null, null, null, gameObject.GetComponent<AbilityManager>());
+            addAbility(ability);
         }
+        
     }
 
-    public void addItem(ItemManager item, AmmoManager ammo, SpellManager spell, ClothingManager clothing, AbilityManager ability)
+    public void addWeapon(WeaponData weapon)
     {
-        if (item != null)
+        if (weaponInv.Count + 1 < maxWeapons)
+            weaponInv.Add(weapon);
+    }
+    public void addGear(GearData gear)
+    {
+        if (gearInv.Count + 1 < maxGear)
         {
-            if (item.itemClass.Equals("Gear") && gearInv.Count + 1 < maxGear)
+            if (gearInv.Contains(gear))
             {
-                if (item.quantity == 0)
-                {
-                    item.quantity = 1;
-                }
-                if (gearInv.Contains(item))
-                {
-                    gearQs[gearInv.IndexOf(item)] += item.quantity;
-                }
-                else
-                {
-                    gearInv.Add(item);
-                    gearQs.Add(item.quantity);
-                }
-
-            }
-            else if (item.itemClass.Equals("Weapon") && weaponInv.Count + 1 < maxWeapons)
-            {
-
-                weaponInv.Add(item);
-            }
-        }
-        else if (ammo != null)
-        {
-            if (ammo.quantity == 0)
-            {
-                ammo.quantity = 1;
-            }
-            if (ammoInv.Contains(ammo))
-            {
-                ammoQs[ammoInv.IndexOf(ammo)] += ammo.quantity;
+                gearQs[gearInv.IndexOf(gear)] += gear.quantity;
             }
             else
             {
-                ammoInv.Add(ammo);
-                ammoQs.Add(ammo.quantity);
+                gearInv.Add(gear);
+                gearQs.Add(gear.quantity);
             }
         }
-        else if (spell != null)
-        {
+    }
+    public void addAmmo(AmmoData ammo)
+    {
 
-            spellInv.Add(spell);
-        }
-        else if (clothing != null)
+        if (ammoInv.Contains(ammo))
         {
-            clothingInv.Add(clothing);
+            ammoQs[ammoInv.IndexOf(ammo)] += ammo.quantity;
         }
-        else if (ability != null)
+        else
         {
-            abilityInv.Add(ability);
+            ammoInv.Add(ammo);
+            ammoQs.Add(ammo.quantity);
         }
     }
+    public void addSpell(SpellData spell)
+    {
+        spellInv.Add(spell);
+    }
+    public void addAbility(AbilityData ability)
+    {
+        abilityInv.Add(ability);
+    }
+    public void addClothing(ClothingData clothing)
+    {
+        clothingInv.Add(clothing);
+    }
 
-    public void SetWeaponActive(GameObject weapon, string location)
+    
+
+    public void SetWeaponActive(WeaponData weapon, string location)
     {
 
         switch (location)
@@ -161,7 +153,7 @@ public class InventoryManager : MonoBehaviour
             case "right":
                 if (weapon != null)
                 {
-                    activeWeaponR = weapon.GetComponent<ItemManager>();
+                    activeWeaponR = weapon.prefab;
                 }
                 else
                 {
@@ -172,7 +164,7 @@ public class InventoryManager : MonoBehaviour
             case "left":
                 if (weapon != null)
                 {
-                    activeWeaponL = weapon.GetComponent<ItemManager>();
+                    activeWeaponL = weapon.prefab;
                 }
                 else
                 {
@@ -180,43 +172,42 @@ public class InventoryManager : MonoBehaviour
                 }
                 GetComponent<CharacterAndWeaponController>().setWeapons(null, weapon);
                 break;
-            case "ammo":
-                if (weapon != null)
-                {
-                    activeAmmo = weapon.GetComponent<AmmoManager>();
-                }
-                break;
         }
 
     }
 
-    public void SetClothingActive(ClothingManager clothing)
+    public void SetAmmoActive(AmmoData ammo)
+    {
+        activeAmmo = ammo;
+    }
+
+    public void SetClothingActive(ClothingData clothing)
     {
         GameObject clothingObj = null;
         Transform modCharLevel = transform.Find("Modular Characters");
         clothingInv.Remove(clothing);
         switch (clothing.slot)
         {
-            case ClothingManager.ClothingSlot.Head_Covering_Base:
+            case ClothingData.ClothingSlot.Head_Covering_Base:
                 if (activeHead != null)
                 {
-                    activeHead.gameObject.SetActive(false);
-                    clothingInv.Add(activeHead);
+                    activeHead.SetActive(false);
+                    clothingInv.Add(activeHead.GetComponent<Clothing>().data);
                 }
                 clothingObj = modCharLevel.transform.Find("Head Coverings").Find("Base Hair").Find(clothing.clothingName).gameObject;
 
-                activeHead = clothingObj.GetComponent<ClothingManager>();
+                activeHead = clothingObj;
                 activeFace.SetActive(true);
                 break;
-            case ClothingManager.ClothingSlot.Head_Covering_No_Facial_Hair:
+            case ClothingData.ClothingSlot.Head_Covering_No_Facial_Hair:
                 if (activeHead != null)
                 {
                     activeHead.gameObject.SetActive(false);
-                    clothingInv.Add(activeHead);
+                    clothingInv.Add(activeHead.GetComponent<Clothing>().data);
                 }
                 clothingObj = modCharLevel.transform.Find("Head Coverings").Find("No Facial Hair").Find(clothing.clothingName).gameObject;
 
-                activeHead = clothingObj.GetComponent<ClothingManager>();
+                activeHead = clothingObj;
 
                 activeFace.SetActive(true);
                 if (activeFacialHair != null && activeFacialHair.gameObject != null)
@@ -226,15 +217,15 @@ public class InventoryManager : MonoBehaviour
 
                 }
                 break;
-            case ClothingManager.ClothingSlot.Head_Covering_No_Hair:
+            case ClothingData.ClothingSlot.Head_Covering_No_Hair:
                 if (activeHead != null)
                 {
                     activeHead.gameObject.SetActive(false);
-                    clothingInv.Add(activeHead);
+                    clothingInv.Add(activeHead.GetComponent<Clothing>().data);
                 }
                 clothingObj = modCharLevel.transform.Find("Head Coverings").Find("No Hair").Find(clothing.clothingName).gameObject;
 
-                activeHead = clothingObj.GetComponent<ClothingManager>();
+                activeHead = clothingObj;
                 activeFace.SetActive(true);
                 if (activeFacialHair != null && activeFacialHair.gameObject != null)
                 {
@@ -249,7 +240,7 @@ public class InventoryManager : MonoBehaviour
                 }
                 break;
 
-            case ClothingManager.ClothingSlot.Helmet:
+            case ClothingData.ClothingSlot.Helmet:
                 if (activeFace != null)
                 {
                     activeFace.SetActive(false);
@@ -261,87 +252,87 @@ public class InventoryManager : MonoBehaviour
                     activeHead.transform.GetChild(0).gameObject.SetActive(false);
                     activeHead.transform.GetChild(1).gameObject.SetActive(false);
 
-                    clothingInv.Add(activeHead);
+                    clothingInv.Add(activeHead.GetComponent<Clothing>().data);
                 }
                 clothingObj = modCharLevel.transform.Find("Helmets").Find(clothing.clothingName).gameObject;
                 clothingObj.SetActive(true);
 
 
-                activeHead = clothingObj.GetComponent<ClothingManager>();
+                activeHead = clothingObj;
                 clothingObj = clothingObj.transform.Find(GameObject.Find("Player").GetComponent<StatsManager>().bodyType.ToString()).gameObject;
 
                 break;
-            case ClothingManager.ClothingSlot.Torso:
+            case ClothingData.ClothingSlot.Torso:
                 if (activeTorso != null)
                 {
                     activeTorso.gameObject.SetActive(false);
                     activeTorso.transform.GetChild(0).gameObject.SetActive(false);
                     activeTorso.transform.GetChild(1).gameObject.SetActive(false);
 
-                    if (!clothingInv.Contains(activeTorso) && activeTorso != modCharLevel.transform.Find("Torsos").Find(clothing.clothingName).GetComponent<ClothingManager>())
+                    if (!clothingInv.Contains(activeTorso.GetComponent<Clothing>().data) && activeTorso != modCharLevel.transform.Find("Torsos").Find(clothing.clothingName).GetComponent<Clothing>().gameObject)
                     {
-                        clothingInv.Add(activeTorso);
+                        clothingInv.Add(activeTorso.GetComponent<Clothing>().data);
                     }
                 }
                 clothingObj = modCharLevel.transform.Find("Torsos").Find(clothing.clothingName).gameObject;
                 clothingObj.SetActive(true);
 
-                activeTorso = clothingObj.GetComponent<ClothingManager>();
+                activeTorso = clothingObj;
                 clothingObj = clothingObj.transform.Find(GameObject.Find("Player").GetComponent<StatsManager>().bodyType.ToString()).gameObject;
 
                 break;
-            case ClothingManager.ClothingSlot.Hand:
+            case ClothingData.ClothingSlot.Hand:
                 if (activeHands != null)
                 {
                     activeHands.gameObject.SetActive(false);
                     activeHands.transform.GetChild(0).gameObject.SetActive(false);
                     activeHands.transform.GetChild(1).gameObject.SetActive(false);
 
-                    if (!clothingInv.Contains(activeHands) && activeHands != modCharLevel.transform.Find("Hands").Find(clothing.clothingName).GetComponent<ClothingManager>())
+                    if (!clothingInv.Contains(activeHands.GetComponent<Clothing>().data) && activeHands != modCharLevel.transform.Find("Hands").Find(clothing.clothingName).GetComponent<Clothing>().gameObject)
                     {
-                        clothingInv.Add(activeHands);
+                        clothingInv.Add(activeHands.GetComponent<Clothing>().data);
                     }
                 }
                 clothingObj = modCharLevel.transform.Find("Hands").Find(clothing.clothingName).gameObject;
                 clothingObj.SetActive(true);
 
-                activeHands = clothingObj.GetComponent<ClothingManager>();
+                activeHands = clothingObj;
                 clothingObj = clothingObj.transform.Find(GameObject.Find("Player").GetComponent<StatsManager>().bodyType.ToString()).gameObject;
 
                 break;
-            case ClothingManager.ClothingSlot.Leg:
+            case ClothingData.ClothingSlot.Leg:
                 if (activeLegs != null)
                 {
                     activeLegs.gameObject.SetActive(false);
                     activeLegs.transform.GetChild(0).gameObject.SetActive(false);
                     activeLegs.transform.GetChild(1).gameObject.SetActive(false);
-                    if (!clothingInv.Contains(activeLegs) && activeLegs != modCharLevel.transform.Find("Legs").Find(clothing.clothingName).GetComponent<ClothingManager>())
+                    if (!clothingInv.Contains(activeLegs.GetComponent<Clothing>().data) && activeLegs != modCharLevel.transform.Find("Legs").Find(clothing.clothingName).GetComponent<Clothing>().gameObject)
                     {
-                        clothingInv.Add(activeLegs);
+                        clothingInv.Add(activeLegs.GetComponent<Clothing>().data);
                     }
                 }
                 clothingObj = modCharLevel.transform.Find("Legs").Find(clothing.clothingName).gameObject;
                 clothingObj.SetActive(true);
 
-                activeLegs = clothingObj.GetComponent<ClothingManager>();
+                activeLegs = clothingObj;
                 clothingObj = clothingObj.transform.Find(GameObject.Find("Player").GetComponent<StatsManager>().bodyType.ToString()).gameObject;
 
                 break;
-            case ClothingManager.ClothingSlot.Boot:
+            case ClothingData.ClothingSlot.Boot:
                 if (activeBoots != null)
                 {
                     activeBoots.gameObject.SetActive(false);
                     activeBoots.transform.GetChild(0).gameObject.SetActive(false);
                     activeBoots.transform.GetChild(1).gameObject.SetActive(false);
-                    if (!clothingInv.Contains(activeBoots) && activeBoots != modCharLevel.transform.Find("Boots").Find(clothing.clothingName).GetComponent<ClothingManager>())
+                    if (!clothingInv.Contains(activeBoots.GetComponent<Clothing>().data) && activeBoots != modCharLevel.transform.Find("Boots").Find(clothing.clothingName).GetComponent<Clothing>().gameObject)
                     {
-                        clothingInv.Add(activeBoots);
+                        clothingInv.Add(activeBoots.GetComponent<Clothing>().data);
                     }
                 }
                 clothingObj = modCharLevel.transform.Find("Boots").Find(clothing.clothingName).gameObject;
                 clothingObj.SetActive(true);
 
-                activeBoots = clothingObj.GetComponent<ClothingManager>();
+                activeBoots = clothingObj;
                 clothingObj = clothingObj.transform.Find(GameObject.Find("Player").GetComponent<StatsManager>().bodyType.ToString()).gameObject;
 
                 break;
@@ -350,7 +341,7 @@ public class InventoryManager : MonoBehaviour
         clothingObj.SetActive(true);
     }
 
-    public void SetClothingActiveLite(string clothingName, ClothingManager.ClothingSlot slot)
+    public void SetClothingActiveLite(string clothingName, ClothingData.ClothingSlot slot)
     {
         if (clothingName == "")
         {
@@ -360,7 +351,7 @@ public class InventoryManager : MonoBehaviour
         Transform modCharLevel = transform.Find("Modular Characters");
         switch (slot)
         {
-            case ClothingManager.ClothingSlot.Face:
+            case ClothingData.ClothingSlot.Face:
                 if (activeFace != null)
                 {
                     activeFace.SetActive(false);
@@ -374,7 +365,7 @@ public class InventoryManager : MonoBehaviour
                 clothingObj = clothingObj.transform.Find(GameObject.Find("Player").GetComponent<StatsManager>().bodyType.ToString()).gameObject;
                 activeFace = clothingObj.transform.parent.gameObject;
                 break;
-            case ClothingManager.ClothingSlot.Hair:
+            case ClothingData.ClothingSlot.Hair:
                 if (activeHair != null)
                 {
                     activeHair.SetActive(false);
@@ -384,7 +375,7 @@ public class InventoryManager : MonoBehaviour
 
                 activeHair = clothingObj.gameObject;
                 break;
-            case ClothingManager.ClothingSlot.Facial_Hair:
+            case ClothingData.ClothingSlot.Facial_Hair:
                 if (activeFacialHair != null)
                 {
                     activeFacialHair.SetActive(false);
@@ -410,7 +401,7 @@ public class InventoryManager : MonoBehaviour
     }
     public void SetStartFace()
     {
-        SetClothingActiveLite(startFace.name, ClothingManager.ClothingSlot.Face);
+        SetClothingActiveLite(startFace.name, ClothingData.ClothingSlot.Face);
 
     }
 
@@ -506,17 +497,17 @@ public class InventoryManager : MonoBehaviour
         GameObject bootsIcon = null;
         if (GetComponent<StatsManager>().bodyType == StatsManager.BodyTypes.Male)
         {
-            torsoIcon = activeTorso.maleIcon;
-            handsIcon = activeHands.maleIcon;
-            legsIcon = activeLegs.maleIcon;
-            bootsIcon = activeBoots.maleIcon;
+            torsoIcon = activeTorso.GetComponent<Clothing>().data.maleIcon;
+            handsIcon = activeHands.GetComponent<Clothing>().data.maleIcon;
+            legsIcon = activeLegs.GetComponent<Clothing>().data.maleIcon;
+            bootsIcon = activeBoots.GetComponent<Clothing>().data.maleIcon;
         }
         else
         {
-            torsoIcon = activeTorso.femaleIcon;
-            handsIcon = activeHands.femaleIcon;
-            legsIcon = activeLegs.femaleIcon;
-            bootsIcon = activeBoots.femaleIcon;
+            torsoIcon = activeTorso.GetComponent<Clothing>().data.femaleIcon;
+            handsIcon = activeHands.GetComponent<Clothing>().data.femaleIcon;
+            legsIcon = activeLegs.GetComponent<Clothing>().data.femaleIcon;
+            bootsIcon = activeBoots.GetComponent<Clothing>().data.femaleIcon;
 
         }
         GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Torso slot").GetChild(0).gameObject.SetActive(false);
@@ -528,18 +519,18 @@ public class InventoryManager : MonoBehaviour
         GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Boots slot").GetChild(0).gameObject.SetActive(false);
         Instantiate(bootsIcon, GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Boots slot"));
 
-        GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActive(activeTorso);
-        GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActive(activeHands);
-        GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActive(activeLegs);
-        GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActive(activeBoots);
-        GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActiveLite(activeFace.name, ClothingManager.ClothingSlot.Face);
+        GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActive(activeTorso.GetComponent<Clothing>().data);
+        GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActive(activeHands.GetComponent<Clothing>().data);
+        GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActive(activeLegs.GetComponent<Clothing>().data);
+        GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActive(activeBoots.GetComponent<Clothing>().data);
+        GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActiveLite(activeFace.name, ClothingData.ClothingSlot.Face);
         if (activeFacialHair != null)
         {
-            GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActiveLite(activeFacialHair.name, ClothingManager.ClothingSlot.Facial_Hair);
+            GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActiveLite(activeFacialHair.name, ClothingData.ClothingSlot.Facial_Hair);
         }
         if (activeHair != null)
         {
-            GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActiveLite(activeHair.name, ClothingManager.ClothingSlot.Hair);
+            GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").GetComponent<InventoryManager>().SetClothingActiveLite(activeHair.name, ClothingData.ClothingSlot.Hair);
         }
 
         switch (GetComponent<StatsManager>().Race)
@@ -556,6 +547,6 @@ public class InventoryManager : MonoBehaviour
             case StatsManager.Races.Bremri:
                 GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("Player Model").transform.Find("Modular Characters").Find("Head Attachments").Find("Long Bent Ear").gameObject.SetActive(true);
                 break;
-        }
+        } 
     }
 }

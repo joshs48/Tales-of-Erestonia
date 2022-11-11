@@ -19,6 +19,7 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+
         weaponType = animator.GetInteger("Weapon Type");
         enemyType = animator.GetInteger("Enemy");
 
@@ -131,19 +132,17 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
         if (!projectile.name.Equals("Magic_Blast_03_Red_FX"))
         {
             newProjectile = Instantiate(projectile, startPos.transform.position, startRot.transform.rotation);
-
+            var collision = newProjectile.GetComponent<ParticleSystem>().collision;
+            collision.collidesWith |= (1 << 3);
         }
         else
         {
             newProjectile = Instantiate(projectile);
-            newProjectile.transform.position = startPos.transform.position;
-            
-
-
+            var collision = newProjectile.GetComponent<ParticleSystem>().collision;
+            collision.collidesWith |= (1 << 3);
         }
-        //GameObject newProjectile = Instantiate(projectile, startPos.transform.position, startRot.transform.rotation);
         EnemyProjectileManager epm = newProjectile.AddComponent<EnemyProjectileManager>();
-        SpellManager sm = newProjectile.GetComponent<SpellManager>();
+        SpellData sm = newProjectile.GetComponent<Spell>().data;
 
         epm.damageVal = sm.damageVal;
         epm.damageEffects = sm.damageEffects;
@@ -157,11 +156,15 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
         yield return new WaitForSeconds(delay);
         GameObject newShards = Instantiate(shard, start.transform.position, start.transform.rotation, null);
 
-        
         EnemyProjectileManager trailepm = newShards.transform.Find("FX_Shard" + newShards.name.Substring(0, newShards.name.IndexOf(" ")) + "_Smaller_Trail_01").gameObject.AddComponent<EnemyProjectileManager>();
         EnemyProjectileManager explosionepm = newShards.transform.Find("FX_Shard" + newShards.name.Substring(0, newShards.name.IndexOf(" ")) + "_Explosion_01").gameObject.AddComponent<EnemyProjectileManager>();
-        SpellManager trailsm = trailepm.gameObject.GetComponent<SpellManager>();
-        SpellManager explosionsm = trailepm.gameObject.GetComponent<SpellManager>();
+        SpellData trailsm = trailepm.gameObject.GetComponent<SpellData>();
+        SpellData explosionsm = trailepm.gameObject.GetComponent<SpellData>();
+
+        var collision = trailepm.gameObject.GetComponent<ParticleSystem>().collision;
+        collision.collidesWith |= (1 << 3);
+        collision = explosionepm.gameObject.GetComponent<ParticleSystem>().collision;
+        collision.collidesWith |= (1 << 3);
 
         trailepm.damageVal = trailsm.damageVal;
         trailepm.damageEffects = trailsm.damageEffects;
@@ -185,7 +188,9 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
             GeyserPos = Vector3.MoveTowards(GeyserPos, target, distanceBetween);
             GameObject newGeyser = Instantiate(geyser, GeyserPos, Quaternion.Euler(0, 0, 0));
             EnemyProjectileManager epm = newGeyser.AddComponent<EnemyProjectileManager>();
-            SpellManager sm = newGeyser.GetComponent<SpellManager>();
+            SpellData sm = newGeyser.GetComponent<SpellData>();
+            var collision = newGeyser.GetComponent<ParticleSystem>().collision;
+            collision.collidesWith |= (1 << 3);
 
             epm.damageVal = sm.damageVal;
             epm.damageEffects = sm.damageEffects;

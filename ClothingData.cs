@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClothingManager : MonoBehaviour
+[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Clothing", order = 6)]
+
+public class ClothingData : ScriptableObject
 {
-    
     public enum Classes
     {
         Barbarian,
@@ -79,14 +80,12 @@ public class ClothingManager : MonoBehaviour
     public string clothingName;
     public GameObject maleIcon;//pic for ui
     public GameObject femaleIcon;
+    public GameObject prefab;
     public string description;//description
 
 
     public int cost;
     public int armorVal;
     public int speedVal;//for boots this is postiive, for heavy armor it's negative, the total sum is your speed
-    
-    
-
 
 }

@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Weapon", order = 1)]
+[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Gear", order = 2)]
 
-public class WeaponData : ScriptableObject
+
+public class GearData : ScriptableObject
 {
     public enum Rarity
     {
@@ -17,14 +18,9 @@ public class WeaponData : ScriptableObject
 
     public enum Type
     {
-        Axe,
-        Bow,
-        Crossbow,
-        Shield,
-        Staff,
-        Sword
-        
+        Potion
     };
+
 
     public enum Owner
     {
@@ -33,15 +29,15 @@ public class WeaponData : ScriptableObject
         NPC
     }
 
-    public string weaponName;
+    public string gearName;
     public GameObject icon;//pic for ui
     public GameObject prefab;//what gets instantiated if something does
-    public string weaponDescription;//description
+    public string gearDescription;//description
 
 
-    public Rarity weaponRarity;//Common/Rare weapons use numbers built in magic have extra effects
+    public Rarity gearRarity;//Common/Rare gears use numbers built in magic have extra effects
 
-    public int weaponCost;// gp
+    public int gearCost;// gp
 
     public int shieldVal;
     public int damageVal;
@@ -49,10 +45,12 @@ public class WeaponData : ScriptableObject
     public int effectDuration;
     public int damagePerSec;
     public ParticleSystem damageEffect;
+    public int healVal;
 
-    public Type weaponType;// Sword, Bow...
+    public Type gearType;// Potion, Gem
 
-    public string location;// hands, right hand, head, legs...
 
-    //public Owner weaponOwner;
+    public Owner gearOwner;
+
+    public int quantity;
 }

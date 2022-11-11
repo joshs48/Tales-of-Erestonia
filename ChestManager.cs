@@ -5,8 +5,9 @@ using UnityEngine;
 public class ChestManager : MonoBehaviour
 {
     public string chestName;
-    public List<ItemManager> chestItems = new List<ItemManager>();
-    public List<AmmoManager> chestAmmo = new List<AmmoManager>();
+    public List<WeaponData> chestWeapons = new List<WeaponData>();
+    public List<GearData> chestGear = new List<GearData>();
+    public List<AmmoData> chestAmmo = new List<AmmoData>();
 
     private bool canOpen = false;
     private bool isOpened = false;
@@ -71,17 +72,22 @@ public class ChestManager : MonoBehaviour
         }
     }
 
-    public void RemoveItem(ItemManager item, AmmoManager ammo)
+    public void RemoveItem(WeaponData weapon, GearData gear, AmmoData ammo)
     {
-        if (item != null)
+        if (weapon != null)
         {
-            chestItems.Remove(item);
-            Destroy(transform.Find(item.gameObject.name).gameObject);
+            chestWeapons.Remove(weapon);
+            Destroy(transform.Find(weapon.name).gameObject);
+        }
+        if (weapon != null)
+        {
+            chestGear.Remove(gear);
+            Destroy(transform.Find(gear.name).gameObject);
         }
         if (ammo != null)
         {
             chestAmmo.Remove(ammo);
-            Destroy(transform.Find(ammo.gameObject.name).gameObject);
+            Destroy(transform.Find(ammo.name).gameObject);
 
         }
     }

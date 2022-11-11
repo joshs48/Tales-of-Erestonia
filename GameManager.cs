@@ -374,7 +374,7 @@ public class UIUpdater : MonoBehaviour
                     switch (curQSGitem.GetComponent<IconManager>().objectClass)
                     {
                         case IconManager.Class.Weapon:
-                            GameObject.Find("Player").GetComponent<InventoryManager>().gearActive.Remove(curQSGitem.GetComponent<IconManager>().Item);
+                            GameObject.Find("Player").GetComponent<InventoryManager>().gearActive.Remove(curQSGitem.GetComponent<IconManager>().Gear);
                             GameObject eqSlot;
 
                             if (curQSGitem.GetComponent<IconManager>().Location.Equals("Weapon"))
@@ -388,36 +388,34 @@ public class UIUpdater : MonoBehaviour
                             InventoryUIRunner.EquipItem(curQSGitem, eqSlot);
                             break;
                         case IconManager.Class.Gear:
-                            im.gearActiveQs[im.gearActive.IndexOf(curQSGitem.GetComponent<IconManager>().Item)] -= 1;
-                            curQSGitem.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().text = im.gearActiveQs[im.gearActive.IndexOf(curQSGitem.GetComponent<IconManager>().Item)].ToString();
+                            im.gearActiveQs[im.gearActive.IndexOf(curQSGitem.GetComponent<IconManager>().Gear)] -= 1;
+                            curQSGitem.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().text = im.gearActiveQs[im.gearActive.IndexOf(curQSGitem.GetComponent<IconManager>().Gear)].ToString();
 
                             switch (curQSGitem.GetComponent<IconManager>().objectType)
                             {
                                 case IconManager.Type.Potion:
-                                    if (curQSGitem.GetComponent<IconManager>().Item.shieldVal > 0)
+                                    if (curQSGitem.GetComponent<IconManager>().Gear.shieldVal > 0)
                                     {
                                         //idk
                                     }
-                                    else if (curQSGitem.GetComponent<IconManager>().Item.healVal > 0)
+                                    else if (curQSGitem.GetComponent<IconManager>().Gear.healVal > 0)
                                     {
-                                        game.playerStats.GiveHealth(curQSGitem.GetComponent<IconManager>().Item.healVal);
+                                        game.playerStats.GiveHealth(curQSGitem.GetComponent<IconManager>().Gear.healVal);
                                     }
 
                                     break;
                             }
-                            if (im.gearActiveQs[im.gearActive.IndexOf(curQSGitem.GetComponent<IconManager>().Item)] <= 0)
+                            if (im.gearActiveQs[im.gearActive.IndexOf(curQSGitem.GetComponent<IconManager>().Gear)] <= 0)
                             {
 
-                                im.gearActiveQs.RemoveAt(im.gearActive.IndexOf(curQSGitem.GetComponent<IconManager>().Item));
-                                im.gearActive.Remove(curQSGitem.GetComponent<IconManager>().Item);
+                                im.gearActiveQs.RemoveAt(im.gearActive.IndexOf(curQSGitem.GetComponent<IconManager>().Gear));
+                                im.gearActive.Remove(curQSGitem.GetComponent<IconManager>().Gear);
                                 Destroy(curQSGitem);
                             }
                             break;
                     }
                 }
-                else if (curQSGitem.GetComponent<AmmoManager>() != null)
-                {
-                }
+
             }
         }
         game.prevQSGUse = game.pc.QSGUse;
@@ -451,7 +449,7 @@ public class UIUpdater : MonoBehaviour
             if (GameObject.Find("Canvas").transform.Find("QS Container").transform.Find("QS_Spell " + game.CurQSS.ToString()).transform.childCount > 1)
             {
                 curQSSitem = GameObject.Find("Canvas").transform.Find("QS Container").transform.Find("QS_Spell " + game.CurQSS.ToString()).transform.GetChild(1).gameObject;
-                if (curQSSitem.GetComponent<IconManager>().Spell.spellType == "Targeted")
+                if (curQSSitem.GetComponent<IconManager>().Spell.spellType == SpellData.Type.Targeted)
                 {
                     game.StartCoroutine(OutlineNearestEnemy(game.CurQSS));
                 }
@@ -471,7 +469,8 @@ public class UIUpdater : MonoBehaviour
                 {
                     switch (curQSSitem.GetComponent<IconManager>().Spell.spellClass)
                     {
-                        case "Attack":
+                        case SpellData.Class.Melee_Attack:
+                        case SpellData.Class.Ranged_Attack:
 
                             game.player.GetComponent<Animator>().SetTrigger("Magic Attack");
                             int spellVal = 0;
@@ -553,11 +552,11 @@ public class UIUpdater : MonoBehaviour
 
     }
 
-    private static void ActivateAbility(AbilityManager ability)
+    private static void ActivateAbility(AbilityData ability)
     {
         switch (ability.abilityType)
         {
-            case "Instant":
+            case AbilityData.Type.Instant:
 
                 game.player.GetComponent<Animator>().SetTrigger("Use Ability");
                 int abilityVal = 0;
@@ -566,16 +565,16 @@ public class UIUpdater : MonoBehaviour
                     case "Fire Blast":
                         abilityVal = 1;
                         break;
-    
+
                 }
                 game.player.GetComponent<Animator>().SetInteger("Ability", abilityVal);
                 break;
 
-            case "Active":
+            case AbilityData.Type.Active:
                 Debug.Log("Active abilities not set up yet");
                 break;
 
-            case "Continuous":
+            case AbilityData.Type.Continuous:
                 Debug.Log("Continuous abilities not set up yet");
                 break;
         }
@@ -700,19 +699,19 @@ public class InventoryUIRunner : MonoBehaviour
             game.inventoryBox.SetActive(true);
             game.customizeBox.SetActive(false);
             int index = 0;
-            foreach (ClothingManager item in im.clothingInv)
+            foreach (ClothingData clothing in im.clothingInv)
             {
                 GameObject icon = null;
                 switch (GameObject.Find("Player").GetComponent<StatsManager>().bodyType)
                 {
                     case StatsManager.BodyTypes.Male:
-                        icon = item.maleIcon;
+                        icon = clothing.maleIcon;
                         break;
                     case StatsManager.BodyTypes.Female:
-                        icon = item.femaleIcon;
+                        icon = clothing.femaleIcon;
                         break;
                 }
-                icon.GetComponent<IconManager>().Clothing = item;
+                icon.GetComponent<IconManager>().Clothing = clothing;
                 GameObject curBox = game.inventoryBox.transform.Find("Inventory Slot (" + index + ")").gameObject;
 
                 Instantiate(icon, curBox.transform, false);
@@ -739,10 +738,10 @@ public class InventoryUIRunner : MonoBehaviour
             game.inventoryBox.SetActive(true);
             game.customizeBox.SetActive(false);
             int index = 0;
-            foreach (ItemManager item in im.weaponInv)
+            foreach (WeaponData weapon in im.weaponInv)
             {
-                GameObject icon = item.icon;
-                icon.GetComponent<IconManager>().Item = item;
+                GameObject icon = weapon.icon;
+                icon.GetComponent<IconManager>().Weapon = weapon;
                 GameObject curBox = game.inventoryBox.transform.Find("Inventory Slot (" + index + ")").gameObject;
 
                 Instantiate(icon, curBox.transform, false);
@@ -769,10 +768,10 @@ public class InventoryUIRunner : MonoBehaviour
             game.inventoryBox.SetActive(true);
             game.customizeBox.SetActive(false);
             int index = 0;
-            foreach (AmmoManager item in im.ammoInv)
+            foreach (AmmoData ammo in im.ammoInv)
             {
-                GameObject icon = item.icon;
-                icon.GetComponent<IconManager>().Ammo = item;
+                GameObject icon = ammo.icon;
+                icon.GetComponent<IconManager>().Ammo = ammo;
                 GameObject curBox = game.inventoryBox.transform.Find("Inventory Slot (" + index + ")").gameObject;
                 GameObject newIcon = Instantiate(icon, curBox.transform, false);
 
@@ -784,7 +783,7 @@ public class InventoryUIRunner : MonoBehaviour
                 GameObject quantity = Instantiate(game.quantityText, curBox.transform);
                 quantity.transform.SetParent(newIcon.transform);
                 quantity.transform.SetAsFirstSibling();
-                quantity.GetComponent<TextMeshProUGUI>().text = im.ammoQs[im.ammoInv.IndexOf(item)].ToString();
+                quantity.GetComponent<TextMeshProUGUI>().text = im.ammoQs[im.ammoInv.IndexOf(ammo)].ToString();
                 index += 1;
             }
             game.inventoryBox.transform.Find("Secondary Text").gameObject.GetComponent<TextMeshProUGUI>().text = "Ammo";
@@ -801,10 +800,10 @@ public class InventoryUIRunner : MonoBehaviour
             game.inventoryBox.SetActive(true);
             game.customizeBox.SetActive(false);
             int index = 0;
-            foreach (ItemManager item in im.gearInv)
+            foreach (GearData gear in im.gearInv)
             {
-                GameObject icon = item.icon;
-                icon.GetComponent<IconManager>().Item = item;
+                GameObject icon = gear.icon;
+                icon.GetComponent<IconManager>().Gear = gear;
                 GameObject curBox = game.inventoryBox.transform.Find("Inventory Slot (" + index + ")").gameObject;
                 GameObject newIcon = Instantiate(icon, curBox.transform, false);
 
@@ -816,7 +815,7 @@ public class InventoryUIRunner : MonoBehaviour
                 GameObject quantity = Instantiate(game.quantityText, curBox.transform);
                 quantity.transform.SetParent(newIcon.transform);
                 quantity.transform.SetAsFirstSibling();
-                quantity.GetComponent<TextMeshProUGUI>().text = im.gearQs[im.gearInv.IndexOf(item)].ToString();
+                quantity.GetComponent<TextMeshProUGUI>().text = im.gearQs[im.gearInv.IndexOf(gear)].ToString();
                 index += 1;
             }
             game.inventoryBox.transform.Find("Secondary Text").gameObject.GetComponent<TextMeshProUGUI>().text = "Gear";
@@ -833,7 +832,7 @@ public class InventoryUIRunner : MonoBehaviour
             game.inventoryBox.SetActive(true);
             game.customizeBox.SetActive(false);
             int index = 0;
-            foreach (SpellManager spell in im.spellInv)
+            foreach (SpellData spell in im.spellInv)
             {
                 GameObject icon = spell.icon;
                 icon.GetComponent<IconManager>().Spell = spell;
@@ -862,7 +861,7 @@ public class InventoryUIRunner : MonoBehaviour
             game.inventoryBox.SetActive(true);
             game.customizeBox.SetActive(false);
             int index = 0;
-            foreach (AbilityManager ability in im.abilityInv)
+            foreach (AbilityData ability in im.abilityInv)
             {
                 GameObject icon = ability.icon;
                 icon.GetComponent<IconManager>().Ability = ability;
@@ -1016,7 +1015,7 @@ public class InventoryUIRunner : MonoBehaviour
 
             if (prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Weapon)
             {
-                im.weaponInv.Add(prevIcon.GetComponent<IconManager>().Item);
+                im.weaponInv.Add(prevIcon.GetComponent<IconManager>().Weapon);
             }
             else if (prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Ammo)
             {
@@ -1024,7 +1023,7 @@ public class InventoryUIRunner : MonoBehaviour
             }
             else if (prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Gear)
             {
-                im.gearInv.Add(prevIcon.GetComponent<IconManager>().Item);
+                im.gearInv.Add(prevIcon.GetComponent<IconManager>().Gear);
             }
             else if (prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Spell)
             {
@@ -1050,7 +1049,7 @@ public class InventoryUIRunner : MonoBehaviour
             }
             else if (eqSlot == "Item")
             {
-                im.gearActive.Remove(icon.GetComponent<IconManager>().Item);
+                im.gearActive.Remove(icon.GetComponent<IconManager>().Gear);
             }
             else if (eqSlot == "Spell")
             {
@@ -1087,7 +1086,7 @@ public class InventoryUIRunner : MonoBehaviour
         {
             GameObject prevIcon = GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("R_weapon slot").transform.GetChild(1).gameObject;
 
-            im.weaponInv.Add(prevIcon.GetComponent<IconManager>().Item);
+            im.weaponInv.Add(prevIcon.GetComponent<IconManager>().Weapon);
             GameObject newParent;
             if ((game.currTab == GameManager.Tabs.Weapons && prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Weapon) || (game.currTab == GameManager.Tabs.Ammo && prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Ammo) || (game.currTab == GameManager.Tabs.Gear && prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Gear) || (game.currTab == GameManager.Tabs.Spells && prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Spell) || (game.currTab == GameManager.Tabs.Abilities && prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Ability))
             {
@@ -1125,7 +1124,7 @@ public class InventoryUIRunner : MonoBehaviour
         {
             GameObject prevIcon = GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("L_weapon slot").transform.GetChild(1).gameObject;
 
-            im.weaponInv.Add(prevIcon.GetComponent<IconManager>().Item);
+            im.weaponInv.Add(prevIcon.GetComponent<IconManager>().Weapon);
             GameObject newParent;
             if ((game.currTab == GameManager.Tabs.Weapons && prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Weapon) || (game.currTab == GameManager.Tabs.Ammo && prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Ammo) || (game.currTab == GameManager.Tabs.Gear && prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Gear) || (game.currTab == GameManager.Tabs.Spells && prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Spell) || (game.currTab == GameManager.Tabs.Abilities && prevIcon.GetComponent<IconManager>().objectClass == IconManager.Class.Ability))
             {
@@ -1159,28 +1158,28 @@ public class InventoryUIRunner : MonoBehaviour
         if (icon.GetComponent<IconManager>().objectClass == IconManager.Class.Weapon)
         {
 
-            im.weaponInv.Remove(icon.GetComponent<IconManager>().Item);
+            im.weaponInv.Remove(icon.GetComponent<IconManager>().Weapon);
 
             if (eqSlot == "R_weapon")
             {
-                im.activeWeaponR = icon.GetComponent<IconManager>().Item;
-                im.SetWeaponActive(im.activeWeaponR.gameObject, "right");
+                im.activeWeaponR = icon.GetComponent<IconManager>().Weapon.prefab;
+                im.SetWeaponActive(icon.GetComponent<IconManager>().Weapon, "right");
 
-                pmim.activeWeaponR = icon.GetComponent<IconManager>().Item;
-                pmim.SetWeaponActive(pmim.activeWeaponR.gameObject, "right");
+                pmim.activeWeaponR = icon.GetComponent<IconManager>().Weapon.prefab;
+                pmim.SetWeaponActive(icon.GetComponent<IconManager>().Weapon, "right");
                 pmim.gameObject.GetComponent<CharacterAndWeaponController>().weaponRObject.layer = 5;
             }
             else if (eqSlot == "L_weapon")
             {
-                im.activeWeaponL = icon.GetComponent<IconManager>().Item;
-                im.SetWeaponActive(im.activeWeaponL.gameObject, "left");
-                pmim.activeWeaponL = icon.GetComponent<IconManager>().Item;
-                pmim.SetWeaponActive(pmim.activeWeaponL.gameObject, "left");
+                im.activeWeaponL = icon.GetComponent<IconManager>().Weapon.prefab;
+                im.SetWeaponActive(icon.GetComponent<IconManager>().Weapon, "left");
+                pmim.activeWeaponL = icon.GetComponent<IconManager>().Weapon.prefab;
+                pmim.SetWeaponActive(icon.GetComponent<IconManager>().Weapon, "left");
                 pmim.gameObject.GetComponent<CharacterAndWeaponController>().weaponLObject.layer = 5;
             }
             else
             {
-                im.gearActive.Add(icon.GetComponent<IconManager>().Item);
+                im.gearActive.Add(icon.GetComponent<IconManager>().Gear);
             }
         }
         else if (icon.GetComponent<IconManager>().objectClass == IconManager.Class.Ammo)
@@ -1189,16 +1188,16 @@ public class InventoryUIRunner : MonoBehaviour
             im.ammoQs.Remove(im.ammoInv.IndexOf(icon.GetComponent<IconManager>().Ammo));
             im.ammoInv.Remove(icon.GetComponent<IconManager>().Ammo);
             im.activeAmmo = icon.GetComponent<IconManager>().Ammo;
-            im.SetWeaponActive(im.activeAmmo.gameObject, "ammo");
+            im.SetAmmoActive(im.activeAmmo);
         }
         else if (icon.GetComponent<IconManager>().objectClass == IconManager.Class.Gear)
         {
-            im.gearActiveQs.Add(im.gearQs[im.gearInv.IndexOf(icon.GetComponent<IconManager>().Item)]);
+            im.gearActiveQs.Add(im.gearQs[im.gearInv.IndexOf(icon.GetComponent<IconManager>().Gear)]);
 
-            im.gearQs.RemoveAt(im.gearInv.IndexOf(icon.GetComponent<IconManager>().Item));
-            im.gearInv.Remove(icon.GetComponent<IconManager>().Item);
+            im.gearQs.RemoveAt(im.gearInv.IndexOf(icon.GetComponent<IconManager>().Gear));
+            im.gearInv.Remove(icon.GetComponent<IconManager>().Gear);
 
-            im.gearActive.Add(icon.GetComponent<IconManager>().Item);
+            im.gearActive.Add(icon.GetComponent<IconManager>().Gear);
         }
         else if (icon.GetComponent<IconManager>().objectClass == IconManager.Class.Spell)
         {
@@ -1394,19 +1393,19 @@ public class InventoryUIRunner : MonoBehaviour
 
                 if (game.currTab == GameManager.Tabs.Clothing)
                 {
-                    ClothingManager currClothingManager = icon.GetComponent<IconManager>().Clothing;
+                    ClothingData currClothingData = icon.GetComponent<IconManager>().Clothing;
 
 
 
-                    ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currClothingManager.clothingName;
-                    ds.transform.Find("Type text").gameObject.GetComponent<TextMeshProUGUI>().text = currClothingManager.tags.ToString();
-                    ds.transform.Find("Rarity text").gameObject.GetComponent<TextMeshProUGUI>().text = currClothingManager.rarity.ToString();
+                    ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currClothingData.clothingName;
+                    ds.transform.Find("Type text").gameObject.GetComponent<TextMeshProUGUI>().text = currClothingData.tags.ToString();
+                    ds.transform.Find("Rarity text").gameObject.GetComponent<TextMeshProUGUI>().text = currClothingData.rarity.ToString();
 
-                    ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currClothingManager.description;
+                    ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currClothingData.description;
 
                     TextMeshProUGUI mainValtmp = ds.transform.Find("Main Value").transform.Find("Main Value text").gameObject.GetComponent<TextMeshProUGUI>();
 
-                    if (currClothingManager.armorVal > 0)
+                    if (currClothingData.armorVal > 0)
                     {
                         ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(true);
                         ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(false);
@@ -1414,9 +1413,9 @@ public class InventoryUIRunner : MonoBehaviour
                         ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
                         ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(false);
 
-                        mainValtmp.text = currClothingManager.armorVal.ToString();
+                        mainValtmp.text = currClothingData.armorVal.ToString();
                     }
-                    else if (currClothingManager.speedVal > 0)
+                    else if (currClothingData.speedVal > 0)
                     {
                         ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(false);
                         ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(false);
@@ -1424,7 +1423,7 @@ public class InventoryUIRunner : MonoBehaviour
                         ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
                         ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(true);
 
-                        mainValtmp.text = currClothingManager.speedVal.ToString();
+                        mainValtmp.text = currClothingData.speedVal.ToString();
                     }
                     else
                     {
@@ -1437,7 +1436,7 @@ public class InventoryUIRunner : MonoBehaviour
                         mainValtmp.text = "";
                     }
 
-                    ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = currClothingManager.cost.ToString();
+                    ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = currClothingData.cost.ToString();
 
 
                     if (ds.transform.Find("Icon Slot").childCount > 1)
@@ -1452,20 +1451,20 @@ public class InventoryUIRunner : MonoBehaviour
 
 
                 }
-                else if (game.currTab == GameManager.Tabs.Weapons || game.currTab == GameManager.Tabs.Gear)
+                else if (game.currTab == GameManager.Tabs.Weapons)
                 {
-                    ItemManager currItemManager = icon.GetComponent<IconManager>().Item;
+                    WeaponData currWeaponData = icon.GetComponent<IconManager>().Weapon;
 
 
 
-                    ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currItemManager.itemName;
-                    ds.transform.Find("Type text").gameObject.GetComponent<TextMeshProUGUI>().text = currItemManager.itemType.ToString();
-                    ds.transform.Find("Rarity text").gameObject.GetComponent<TextMeshProUGUI>().text = currItemManager.itemRarity.ToString();
+                    ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currWeaponData.weaponName;
+                    ds.transform.Find("Type text").gameObject.GetComponent<TextMeshProUGUI>().text = currWeaponData.weaponType.ToString();
+                    ds.transform.Find("Rarity text").gameObject.GetComponent<TextMeshProUGUI>().text = currWeaponData.weaponRarity.ToString();
 
-                    ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currItemManager.itemDescription;
+                    ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currWeaponData.weaponDescription;
 
                     TextMeshProUGUI mainValtmp = ds.transform.Find("Main Value").transform.Find("Main Value text").gameObject.GetComponent<TextMeshProUGUI>();
-                    if (currItemManager.damageVal > 0)
+                    if (currWeaponData.damageVal > 0)
                     {
                         ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(true);
                         ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(false);
@@ -1473,9 +1472,9 @@ public class InventoryUIRunner : MonoBehaviour
                         ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
                         ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(false);
 
-                        mainValtmp.text = currItemManager.damageVal.ToString();
+                        mainValtmp.text = currWeaponData.damageVal.ToString();
                     }
-                    else if (currItemManager.shieldVal > 0)
+                    else if (currWeaponData.shieldVal > 0)
                     {
                         ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(true);
                         ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(false);
@@ -1483,17 +1482,7 @@ public class InventoryUIRunner : MonoBehaviour
                         ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
                         ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(false);
 
-                        mainValtmp.text = currItemManager.shieldVal.ToString();
-                    }
-                    else if (currItemManager.healVal > 0)
-                    {
-                        ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(true);
-                        ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(false);
-                        ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(false);
-                        ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
-                        ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(false);
-
-                        mainValtmp.text = currItemManager.healVal.ToString();
+                        mainValtmp.text = currWeaponData.shieldVal.ToString();
                     }
                     else
                     {
@@ -1507,9 +1496,9 @@ public class InventoryUIRunner : MonoBehaviour
 
                     }
 
-                    ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = currItemManager.itemCost.ToString();
+                    ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = currWeaponData.weaponCost.ToString();
 
-                    switch (currItemManager.damageEffects)
+                    switch (currWeaponData.damageEffects)
                     {
                         case "Burning":
                             ds.transform.Find("Effect").transform.Find("Burning Icon").gameObject.SetActive(true);
@@ -1537,17 +1526,100 @@ public class InventoryUIRunner : MonoBehaviour
                     bigIcon.transform.SetAsLastSibling();
 
                 }
+                else if (game.currTab == GameManager.Tabs.Gear)
+                {
+                    GearData currGearData = icon.GetComponent<IconManager>().Gear;
+
+
+                    ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currGearData.gearName;
+                    ds.transform.Find("Type text").gameObject.GetComponent<TextMeshProUGUI>().text = currGearData.gearType.ToString();
+                    ds.transform.Find("Rarity text").gameObject.GetComponent<TextMeshProUGUI>().text = currGearData.gearRarity.ToString();
+
+                    ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currGearData.gearDescription;
+
+                    TextMeshProUGUI mainValtmp = ds.transform.Find("Main Value").transform.Find("Main Value text").gameObject.GetComponent<TextMeshProUGUI>();
+                    if (currGearData.damageVal > 0)
+                    {
+                        ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(true);
+                        ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(false);
+
+                        mainValtmp.text = currGearData.damageVal.ToString();
+                    }
+                    else if (currGearData.shieldVal > 0)
+                    {
+                        ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(true);
+                        ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(false);
+
+                        mainValtmp.text = currGearData.shieldVal.ToString();
+                    }
+                    else if (currGearData.healVal > 0)
+                    {
+                        ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(true);
+                        ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(false);
+
+                        mainValtmp.text = currGearData.healVal.ToString();
+                    }
+                    else
+                    {
+                        ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
+                        ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(false);
+
+                        mainValtmp.text = "";
+
+                    }
+
+                    ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = currGearData.gearCost.ToString();
+
+                    switch (currGearData.damageEffects)
+                    {
+                        case "Burning":
+                            ds.transform.Find("Effect").transform.Find("Burning Icon").gameObject.SetActive(true);
+                            ds.transform.Find("Effect").transform.Find("Poisoned Icon").gameObject.SetActive(false);
+                            break;
+                        case "Poisoned":
+                            ds.transform.Find("Effect").transform.Find("Poisoned Icon").gameObject.SetActive(true);
+                            ds.transform.Find("Effect").transform.Find("Burning Icon").gameObject.SetActive(false);
+
+                            break;
+                        default:
+                            ds.transform.Find("Effect").transform.Find("Burning Icon").gameObject.SetActive(false);
+                            ds.transform.Find("Effect").transform.Find("Poisoned Icon").gameObject.SetActive(false);
+
+                            break;
+                    }
+                    if (ds.transform.Find("Icon Slot").childCount > 1)
+                    {
+                        Destroy(ds.transform.Find("Icon Slot").GetChild(1).gameObject);
+                    }
+
+                    GameObject bigIcon = Instantiate(icon, ds.transform.Find("Icon Slot"));
+                    bigIcon.transform.localScale = bigIcon.transform.localScale * 500;
+                    bigIcon.transform.localPosition = new Vector3(bigIcon.transform.localPosition.x * 500, bigIcon.transform.localPosition.y * 500, bigIcon.transform.localPosition.z);
+                    bigIcon.transform.SetAsLastSibling();
+                }
                 else if (game.currTab == GameManager.Tabs.Ammo)
                 {
-                    AmmoManager currAmmoManager = icon.GetComponent<IconManager>().Ammo;
+                    AmmoData currAmmoData = icon.GetComponent<IconManager>().Ammo;
 
 
 
-                    ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currAmmoManager.ammoName;
-                    ds.transform.Find("Type text").gameObject.GetComponent<TextMeshProUGUI>().text = currAmmoManager.ammoType;
-                    ds.transform.Find("Rarity text").gameObject.GetComponent<TextMeshProUGUI>().text = currAmmoManager.ammoRarity;
+                    ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currAmmoData.ammoName;
+                    ds.transform.Find("Type text").gameObject.GetComponent<TextMeshProUGUI>().text = currAmmoData.ammoType.ToString();
+                    ds.transform.Find("Rarity text").gameObject.GetComponent<TextMeshProUGUI>().text = currAmmoData.ammoRarity.ToString();
 
-                    ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currAmmoManager.ammoDescription;
+                    ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currAmmoData.ammoDescription;
 
                     TextMeshProUGUI mainValtmp = ds.transform.Find("Main Value").transform.Find("Main Value text").gameObject.GetComponent<TextMeshProUGUI>();
 
@@ -1557,12 +1629,12 @@ public class InventoryUIRunner : MonoBehaviour
                     ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(false);
                     ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(false);
 
-                    mainValtmp.text = currAmmoManager.damageMult.ToString();
+                    mainValtmp.text = currAmmoData.damageMult.ToString();
 
 
-                    ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = currAmmoManager.ammoCost.ToString();
+                    ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = currAmmoData.ammoCost.ToString();
 
-                    switch (currAmmoManager.damageEffects)
+                    switch (currAmmoData.damageEffects)
                     {
                         case "Burning":
                             ds.transform.Find("Effect").transform.Find("Burning Icon").gameObject.SetActive(true);
@@ -1593,17 +1665,17 @@ public class InventoryUIRunner : MonoBehaviour
                 }
                 else if (game.currTab == GameManager.Tabs.Spells)
                 {
-                    SpellManager currSpellManager = icon.GetComponent<IconManager>().Spell;
+                    SpellData currSpellData = icon.GetComponent<IconManager>().Spell;
 
-                    ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currSpellManager.spellName;
-                    ds.transform.Find("Type text").gameObject.GetComponent<TextMeshProUGUI>().text = currSpellManager.spellType;
-                    ds.transform.Find("Rarity text").gameObject.GetComponent<TextMeshProUGUI>().text = "Level " + currSpellManager.spellLevel.ToString();
+                    ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currSpellData.spellName;
+                    ds.transform.Find("Type text").gameObject.GetComponent<TextMeshProUGUI>().text = currSpellData.spellType.ToString();
+                    ds.transform.Find("Rarity text").gameObject.GetComponent<TextMeshProUGUI>().text = "Level " + currSpellData.spellLevel.ToString();
 
-                    ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currSpellManager.spellDescription;
+                    ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currSpellData.spellDescription;
 
                     TextMeshProUGUI mainValtmp = ds.transform.Find("Main Value").transform.Find("Main Value text").gameObject.GetComponent<TextMeshProUGUI>();
 
-                    if (currSpellManager.damageVal > 0)
+                    if (currSpellData.damageVal > 0)
                     {
                         ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(true);
                         ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
@@ -1611,12 +1683,12 @@ public class InventoryUIRunner : MonoBehaviour
                         ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(false);
                         ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(false);
 
-                        mainValtmp.text = currSpellManager.damageVal.ToString();
+                        mainValtmp.text = currSpellData.damageVal.ToString();
                     }
 
                     ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = "0";
 
-                    switch (currSpellManager.damageEffects)
+                    switch (currSpellData.damageEffects)
                     {
                         case "Burning":
                             ds.transform.Find("Effect").transform.Find("Burning Icon").gameObject.SetActive(true);
@@ -1645,17 +1717,17 @@ public class InventoryUIRunner : MonoBehaviour
                 }
                 else if (game.currTab == GameManager.Tabs.Abilities)
                 {
-                    AbilityManager currAbilityManager = icon.GetComponent<IconManager>().Ability;
+                    AbilityData currAbilityData = icon.GetComponent<IconManager>().Ability;
 
-                    ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currAbilityManager.abilityName;
-                    ds.transform.Find("Type text").gameObject.GetComponent<TextMeshProUGUI>().text = currAbilityManager.abilityType;
-                    ds.transform.Find("Rarity text").gameObject.GetComponent<TextMeshProUGUI>().text = "Level " + currAbilityManager.abilityLevel.ToString();
+                    ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currAbilityData.abilityName;
+                    ds.transform.Find("Type text").gameObject.GetComponent<TextMeshProUGUI>().text = currAbilityData.abilityType.ToString();
+                    ds.transform.Find("Rarity text").gameObject.GetComponent<TextMeshProUGUI>().text = "Level " + currAbilityData.abilityLevel.ToString();
 
-                    ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currAbilityManager.abilityDescription;
+                    ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currAbilityData.abilityDescription;
 
                     TextMeshProUGUI mainValtmp = ds.transform.Find("Main Value").transform.Find("Main Value text").gameObject.GetComponent<TextMeshProUGUI>();
 
-                    if (currAbilityManager.damageVal > 0)
+                    if (currAbilityData.damageVal > 0)
                     {
                         ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(true);
                         ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
@@ -1663,12 +1735,12 @@ public class InventoryUIRunner : MonoBehaviour
                         ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(false);
                         ds.transform.Find("Main Value").transform.Find("Speed icon").gameObject.SetActive(false);
 
-                        mainValtmp.text = currAbilityManager.damageVal.ToString();
+                        mainValtmp.text = currAbilityData.damageVal.ToString();
                     }
 
                     ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = "0";
 
-                    switch (currAbilityManager.damageEffects)
+                    switch (currAbilityData.damageEffects)
                     {
                         case "Burning":
                             ds.transform.Find("Effect").transform.Find("Burning Icon").gameObject.SetActive(true);
@@ -1988,8 +2060,8 @@ public class InventoryUIRunner : MonoBehaviour
                         game.selectedFace.transform.SetAsLastSibling();
                         game.selectedFace.transform.parent = currIcon.transform;*/
 
-                        inv.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingManager.ClothingSlot.Face);
-                        pmim.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingManager.ClothingSlot.Face);
+                        inv.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingData.ClothingSlot.Face);
+                        pmim.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingData.ClothingSlot.Face);
                         break;
                     case "Hair":
                         /*if (game.selectedHair != null)
@@ -2000,8 +2072,8 @@ public class InventoryUIRunner : MonoBehaviour
                         game.selectedHair.transform.SetAsLastSibling();
                         game.selectedHair.transform.parent = currIcon.transform;*/
 
-                        inv.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingManager.ClothingSlot.Hair);
-                        pmim.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingManager.ClothingSlot.Hair);
+                        inv.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingData.ClothingSlot.Hair);
+                        pmim.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingData.ClothingSlot.Hair);
                         break;
                     case "Facial Hair":
                         /*if (game.selectedFacialHair != null)
@@ -2012,8 +2084,8 @@ public class InventoryUIRunner : MonoBehaviour
                         game.selectedFacialHair.transform.SetAsLastSibling();
                         game.selectedFacialHair.transform.parent = currIcon.transform;*/
 
-                        inv.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingManager.ClothingSlot.Facial_Hair);
-                        pmim.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingManager.ClothingSlot.Facial_Hair);
+                        inv.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingData.ClothingSlot.Facial_Hair);
+                        pmim.SetClothingActiveLite(currIcon.name.Substring(0, currIcon.name.IndexOf("(")), ClothingData.ClothingSlot.Facial_Hair);
                         break;
                     case "Clothing Colors":
                         /*(if (game.selectedClothingColors != null)
@@ -2067,7 +2139,7 @@ public class InventoryUIRunner : MonoBehaviour
                 }
 
             }
-            else if (currLocation == location || (currLocation.Equals("QS_Item") && (icon.GetComponent<IconManager>().Item != null || icon.GetComponent<IconManager>().Ammo != null)) || (currLocation.Equals("QS_Spell") && icon.GetComponent<IconManager>().Spell != null) || (currLocation.Equals("QS_Ability") && icon.GetComponent<IconManager>().Ability != null))
+            else if (currLocation == location || (currLocation.Equals("QS_Item") && (icon.GetComponent<IconManager>().Weapon != null || icon.GetComponent<IconManager>().Gear != null || icon.GetComponent<IconManager>().Ammo)) || (currLocation.Equals("QS_Spell") && icon.GetComponent<IconManager>().Spell != null) || (currLocation.Equals("QS_Ability") && icon.GetComponent<IconManager>().Ability != null))
             {
                 possibleSlots.Add(currChild);
             }
@@ -2181,7 +2253,7 @@ public class InventoryUIRunner : MonoBehaviour
 
             if (icon.GetComponent<IconManager>().objectClass == IconManager.Class.Weapon)
             {
-                im.weaponInv.Add(icon.GetComponent<IconManager>().Item);
+                im.weaponInv.Add(icon.GetComponent<IconManager>().Weapon);
 
                 if (eqSlot == "R_weapon")
                 {
@@ -2204,7 +2276,7 @@ public class InventoryUIRunner : MonoBehaviour
                 }
                 else
                 {
-                    im.gearActive.Remove(icon.GetComponent<IconManager>().Item);
+                    im.gearActive.Remove(icon.GetComponent<IconManager>().Gear);
                 }
 
                 if (game.currTab == GameManager.Tabs.Weapons)
@@ -2261,11 +2333,11 @@ public class InventoryUIRunner : MonoBehaviour
             }
             else if (icon.GetComponent<IconManager>().objectClass == IconManager.Class.Gear)
             {
-                im.gearInv.Add(icon.GetComponent<IconManager>().Item);
-                im.gearQs.Add(im.gearActiveQs[im.gearActive.IndexOf(icon.GetComponent<IconManager>().Item)]);
+                im.gearInv.Add(icon.GetComponent<IconManager>().Gear);
+                im.gearQs.Add(im.gearActiveQs[im.gearActive.IndexOf(icon.GetComponent<IconManager>().Gear)]);
 
-                im.gearActiveQs.RemoveAt(im.gearActive.IndexOf(icon.GetComponent<IconManager>().Item));
-                im.gearActive.Remove(icon.GetComponent<IconManager>().Item);
+                im.gearActiveQs.RemoveAt(im.gearActive.IndexOf(icon.GetComponent<IconManager>().Gear));
+                im.gearActive.Remove(icon.GetComponent<IconManager>().Gear);
 
                 if (game.currTab == GameManager.Tabs.Gear)
                 {
@@ -2293,13 +2365,13 @@ public class InventoryUIRunner : MonoBehaviour
                 InventoryManager inv = GameObject.Find("Player").GetComponent<InventoryManager>();
                 switch (icon.GetComponent<IconManager>().Clothing.slot)
                 {
-                    case ClothingManager.ClothingSlot.Head_Covering_Base:
+                    case ClothingData.ClothingSlot.Head_Covering_Base:
                         inv.activeHead.gameObject.SetActive(false);
                         inv.activeHead = null;
                         pmim.activeHead.gameObject.SetActive(false);
                         pmim.activeHead = null;
                         break;
-                    case ClothingManager.ClothingSlot.Head_Covering_No_Facial_Hair:
+                    case ClothingData.ClothingSlot.Head_Covering_No_Facial_Hair:
                         inv.activeHead.gameObject.SetActive(false);
                         inv.activeHead = null;
                         pmim.activeHead.gameObject.SetActive(false);
@@ -2310,7 +2382,7 @@ public class InventoryUIRunner : MonoBehaviour
                             pmim.activeFacialHair.gameObject.SetActive(true);
                         }
                         break;
-                    case ClothingManager.ClothingSlot.Head_Covering_No_Hair:
+                    case ClothingData.ClothingSlot.Head_Covering_No_Hair:
                         inv.activeHead.gameObject.SetActive(false);
                         inv.activeHead = null;
                         pmim.activeHead.gameObject.SetActive(false);
@@ -2326,7 +2398,7 @@ public class InventoryUIRunner : MonoBehaviour
                             pmim.activeHair.gameObject.SetActive(true);
                         }
                         break;
-                    case ClothingManager.ClothingSlot.Helmet:
+                    case ClothingData.ClothingSlot.Helmet:
                         inv.activeHead.gameObject.SetActive(false);
                         inv.activeHead = null;
                         pmim.activeHead.gameObject.SetActive(false);
@@ -2347,7 +2419,7 @@ public class InventoryUIRunner : MonoBehaviour
                             pmim.activeFace.gameObject.SetActive(true);
                         }
                         break;
-                    case ClothingManager.ClothingSlot.Torso:
+                    case ClothingData.ClothingSlot.Torso:
                         if (icon.GetComponent<IconManager>().Name != "Blank")
                         {
                             inv.activeTorso.gameObject.SetActive(false);
@@ -2410,25 +2482,35 @@ public class ChestUIRunner : MonoBehaviour
         game.csSelector.transform.SetAsLastSibling();
 
         int index = 0;
-        foreach (ItemManager item in chest.chestItems)
+        foreach (WeaponData weapon in chest.chestWeapons)
         {
-            GameObject icon = item.icon;
-            icon.GetComponent<IconManager>().Item = item;
+            GameObject icon = weapon.icon;
+            icon.GetComponent<IconManager>().Weapon = weapon;
             GameObject curBox = game.cSBox.transform.Find("Inventory Slot (" + index + ")").gameObject;
 
             GameObject newIcon = Instantiate(icon, curBox.transform, false);
-            if (item.itemClass == "Gear")
-            {
-                GameObject quantity = Instantiate(game.quantityText, curBox.transform);
-                quantity.transform.SetParent(newIcon.transform);
-                quantity.transform.SetAsFirstSibling();
-                quantity.GetComponent<TextMeshProUGUI>().text = item.quantity.ToString();
-            }
+
+            index += 1;
+        }
+
+        foreach (GearData gear in chest.chestGear)
+        {
+            GameObject icon = gear.icon;
+            icon.GetComponent<IconManager>().Gear = gear;
+            GameObject curBox = game.cSBox.transform.Find("Inventory Slot (" + index + ")").gameObject;
+
+            GameObject newIcon = Instantiate(icon, curBox.transform, false);
+
+            GameObject quantity = Instantiate(game.quantityText, curBox.transform);
+            quantity.transform.SetParent(newIcon.transform);
+            quantity.transform.SetAsFirstSibling();
+            quantity.GetComponent<TextMeshProUGUI>().text = gear.quantity.ToString();
+
             index += 1;
         }
 
 
-        foreach (AmmoManager ammo in chest.chestAmmo)
+        foreach (AmmoData ammo in chest.chestAmmo)
         {
             GameObject icon = ammo.icon;
             icon.GetComponent<IconManager>().Ammo = ammo;
@@ -2575,11 +2657,16 @@ public class ChestUIRunner : MonoBehaviour
             }
             if (currBox.transform.childCount > 1)
             {
-                ItemManager currItemManager = null;
-                AmmoManager currAmmoManager = null;
-                if (icon.GetComponent<IconManager>().Item != null)
+                WeaponData currWeaponData = null;
+                GearData currGearData = null;
+                AmmoData currAmmoManager = null;
+                if (icon.GetComponent<IconManager>().Weapon != null)
                 {
-                    currItemManager = icon.GetComponent<IconManager>().Item;
+                    currWeaponData = icon.GetComponent<IconManager>().Weapon;
+                }
+                else if (icon.GetComponent<IconManager>().Gear != null)
+                {
+                    currGearData = icon.GetComponent<IconManager>().Gear;
                 }
                 else if (icon.GetComponent<IconManager>().Ammo != null)
                 {
@@ -2590,40 +2677,75 @@ public class ChestUIRunner : MonoBehaviour
 
                     GameObject ds = game.inventoryBox.transform.Find("Description Section").gameObject;
 
-                    if (icon.GetComponent<IconManager>().Item != null)
+                    if (icon.GetComponent<IconManager>().Weapon != null)
                     {
-                        ds.transform.Find("Item Name").gameObject.GetComponent<TextMeshProUGUI>().text = currItemManager.itemName;
-                        ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currItemManager.itemDescription;
+                        ds.transform.Find("Item Name").gameObject.GetComponent<TextMeshProUGUI>().text = currWeaponData.weaponName;
+                        ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currWeaponData.weaponDescription;
 
                         TextMeshProUGUI mainValtmp = ds.transform.Find("Main Value").transform.Find("Main Value text").gameObject.GetComponent<TextMeshProUGUI>();
-                        if (currItemManager.damageVal > 0)
+                        if (currWeaponData.damageVal > 0)
                         {
                             ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(true);
                             ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(false);
                             ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(false);
                             ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
-                            mainValtmp.text = currItemManager.damageVal.ToString();
+                            mainValtmp.text = currWeaponData.damageVal.ToString();
                         }
-                        else if (currItemManager.shieldVal > 0)
+                        else if (currWeaponData.shieldVal > 0)
                         {
                             ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(true);
                             ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(false);
                             ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(false);
                             ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
-                            mainValtmp.text = currItemManager.shieldVal.ToString();
+                            mainValtmp.text = currWeaponData.shieldVal.ToString();
                         }
-                        else if (currItemManager.healVal > 0)
+
+                        ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = currWeaponData.weaponCost.ToString();
+
+                        switch (currWeaponData.damageEffects)
                         {
-                            ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(true);
-                            ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(false);
+                            case "Burning":
+                                ds.transform.Find("Effect").transform.Find("Burning Icon").gameObject.SetActive(true);
+                                ds.transform.Find("Effect").transform.Find("Poisoned Icon").gameObject.SetActive(false);
+                                break;
+                            case "Poisoned":
+                                ds.transform.Find("Effect").transform.Find("Poisoned Icon").gameObject.SetActive(true);
+                                ds.transform.Find("Effect").transform.Find("Burning Icon").gameObject.SetActive(false);
+
+                                break;
+                            default:
+                                ds.transform.Find("Effect").transform.Find("Burning Icon").gameObject.SetActive(false);
+                                ds.transform.Find("Effect").transform.Find("Poisoned Icon").gameObject.SetActive(false);
+
+                                break;
+                        }
+                    }
+                    else if (icon.GetComponent<IconManager>().Gear != null)
+                    {
+                        ds.transform.Find("Item Name").gameObject.GetComponent<TextMeshProUGUI>().text = currGearData.gearName;
+                        ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currGearData.gearDescription;
+
+                        TextMeshProUGUI mainValtmp = ds.transform.Find("Main Value").transform.Find("Main Value text").gameObject.GetComponent<TextMeshProUGUI>();
+                        if (currGearData.damageVal > 0)
+                        {
+                            ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(true);
                             ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(false);
+                            ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(false);
                             ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
-                            mainValtmp.text = currItemManager.healVal.ToString();
+                            mainValtmp.text = currGearData.damageVal.ToString();
+                        }
+                        else if (currGearData.shieldVal > 0)
+                        {
+                            ds.transform.Find("Main Value").transform.Find("Shield icon").gameObject.SetActive(true);
+                            ds.transform.Find("Main Value").transform.Find("Damage icon").gameObject.SetActive(false);
+                            ds.transform.Find("Main Value").transform.Find("Heal icon").gameObject.SetActive(false);
+                            ds.transform.Find("Main Value").transform.Find("Mult icon").gameObject.SetActive(false);
+                            mainValtmp.text = currGearData.shieldVal.ToString();
                         }
 
-                        ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = currItemManager.itemCost.ToString();
+                        ds.transform.Find("Price").transform.Find("Price text").gameObject.GetComponent<TextMeshProUGUI>().text = currGearData.gearCost.ToString();
 
-                        switch (currItemManager.damageEffects)
+                        switch (currGearData.damageEffects)
                         {
                             case "Burning":
                                 ds.transform.Find("Effect").transform.Find("Burning Icon").gameObject.SetActive(true);
@@ -2688,20 +2810,28 @@ public class ChestUIRunner : MonoBehaviour
             //allows for equipping
             if (select && currBox.transform.childCount > 1)
             {
-                if (icon.GetComponent<IconManager>().Item != null)
+                if (icon.GetComponent<IconManager>().Weapon != null)
                 {
-                    game.player.GetComponent<InventoryManager>().addItem(icon.GetComponent<IconManager>().Item, null, null, null, null);
+                    game.player.GetComponent<InventoryManager>().addWeapon(icon.GetComponent<IconManager>().Weapon);
                     if (chest != null)
                     {
-                        chest.RemoveItem(icon.GetComponent<IconManager>().Item, null);
+                        chest.RemoveItem(icon.GetComponent<IconManager>().Weapon, null, null);
+                    }
+                }
+                else if (icon.GetComponent<IconManager>().Gear != null)
+                {
+                    game.player.GetComponent<InventoryManager>().addGear(icon.GetComponent<IconManager>().Gear);
+                    if (chest != null)
+                    {
+                        chest.RemoveItem(null, icon.GetComponent<IconManager>().Gear, null);
                     }
                 }
                 else if (icon.GetComponent<IconManager>().Ammo != null)
                 {
-                    game.player.GetComponent<InventoryManager>().addItem(null, icon.GetComponent<IconManager>().Ammo, null, null, null);
+                    game.player.GetComponent<InventoryManager>().addAmmo(icon.GetComponent<IconManager>().Ammo);
                     if (chest != null)
                     {
-                        chest.RemoveItem(null, icon.GetComponent<IconManager>().Ammo);
+                        chest.RemoveItem(null, null, icon.GetComponent<IconManager>().Ammo);
                     }
                 }
 

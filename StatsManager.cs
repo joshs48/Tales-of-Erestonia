@@ -87,81 +87,85 @@ public class StatsManager : MonoBehaviour
     public GameObject healFX;
     public GameObject levelUpFX;
 
-    [SerializeField] ClothingManager[] BardBaseClothes;
+    [SerializeField] ClothingData[] BardBaseClothes;
     [SerializeField] GameObject[] BardBaseliteClothes;
     [SerializeField] Color[] BardColors;//primary, secondary
-    [SerializeField] ItemManager[] BardBaseItems;
-    [SerializeField] SpellManager[] BardBaseSpells;
-    [SerializeField] ClothingManager[] BardExtraClothes;
+    [SerializeField] WeaponData[] BardBaseWeapons;
+    [SerializeField] GearData[] BardBaseGear;
+    [SerializeField] SpellData[] BardBaseSpells;
+    [SerializeField] ClothingData[] BardExtraClothes;
 
 
-    [SerializeField] ClothingManager[] DruidBaseClothes;
+    [SerializeField] ClothingData[] DruidBaseClothes;
     [SerializeField] GameObject[] DruidBaseliteClothes;
     [SerializeField] Color[] DruidColors;//primary, secondary
-    [SerializeField] ItemManager[] DruidBaseItems;
-    [SerializeField] SpellManager[] DruidBaseSpells;
-    [SerializeField] ClothingManager[] DruidExtraClothes;
+    [SerializeField] WeaponData[] DruidBaseWeapons;
+    [SerializeField] GearData[] DruidBaseGear;
+    [SerializeField] SpellData[] DruidBaseSpells;
+    [SerializeField] ClothingData[] DruidExtraClothes;
 
 
-    [SerializeField] ClothingManager[] WarlockBaseClothes;
+    [SerializeField] ClothingData[] WarlockBaseClothes;
     [SerializeField] GameObject[] WarlockBaseliteClothes;
     [SerializeField] Color[] WarlockColors;//primary, secondary
-    [SerializeField] ItemManager[] WarlockBaseItems;
-    [SerializeField] SpellManager[] WarlockBaseSpells;
-    [SerializeField] ClothingManager[] WarlockExtraClothes;
+    [SerializeField] WeaponData[] WarlockBaseWeapons;
+    [SerializeField] GearData[] WarlockBaseGear;
+    [SerializeField] SpellData[] WarlockBaseSpells;
+    [SerializeField] ClothingData[] WarlockExtraClothes;
 
 
-    [SerializeField] ClothingManager[] WizardBaseClothes;
+    [SerializeField] ClothingData[] WizardBaseClothes;
     [SerializeField] GameObject[] WizardBaseliteClothes;
     [SerializeField] Color[] WizardColors;//primary, secondary
-    [SerializeField] ItemManager[] WizardBaseItems;
-    [SerializeField] SpellManager[] WizardBaseSpells;
-    [SerializeField] ClothingManager[] WizardExtraClothes;
+    [SerializeField] WeaponData[] WizardBaseWeapons;
+    [SerializeField] GearData[] WizardBaseGear;
+    [SerializeField] SpellData[] WizardBaseSpells;
+    [SerializeField] ClothingData[] WizardExtraClothes;
 
 
-    [SerializeField] ClothingManager[] FighterBaseClothes;
+    [SerializeField] ClothingData[] FighterBaseClothes;
     [SerializeField] GameObject[] FighterBaseliteClothes;
     [SerializeField] Color[] FighterColors;//primary, secondary
 
-    [SerializeField] ClothingManager[] MonkBaseClothes;
+    [SerializeField] ClothingData[] MonkBaseClothes;
     [SerializeField] GameObject[] MonkBaseliteClothes;
     [SerializeField] Color[] MonkColors;//primary, secondary
 
-    [SerializeField] ClothingManager[] RangerBaseClothes;
+    [SerializeField] ClothingData[] RangerBaseClothes;
     [SerializeField] GameObject[] RangerBaseliteClothes;
     [SerializeField] Color[] RangerColors;//primary, secondary
 
-    [SerializeField] ClothingManager[] RogueBaseClothes;
+    [SerializeField] ClothingData[] RogueBaseClothes;
     [SerializeField] GameObject[] RogueBaseliteClothes;
     [SerializeField] Color[] RogueColors;//primary, secondary
 
-    [SerializeField] ClothingManager[] BarbarianBaseClothes;
+    [SerializeField] ClothingData[] BarbarianBaseClothes;
     [SerializeField] GameObject[] BarbarianBaseliteClothes;
     [SerializeField] Color[] BarbarianColors;//primary, secondary
 
-    [SerializeField] ClothingManager[] ClericBaseClothes;
+    [SerializeField] ClothingData[] ClericBaseClothes;
     [SerializeField] GameObject[] ClericBaseliteClothes;
     [SerializeField] Color[] ClericColors;//primary, secondary
 
-    [SerializeField] ClothingManager[] PaladinBaseClothes;
+    [SerializeField] ClothingData[] PaladinBaseClothes;
     [SerializeField] GameObject[] PaladinBaseliteClothes;
     [SerializeField] Color[] PaladinColors;//primary, secondary
 
-    [SerializeField] ClothingManager[] TinkererBaseClothes;
+    [SerializeField] ClothingData[] TinkererBaseClothes;
     [SerializeField] GameObject[] TinkererBaseliteClothes;
     [SerializeField] Color[] TinkererColors;//primary, secondary
 
 
     [SerializeField] Material playerMat;
     [SerializeField] Color[] tieflingColors;//hair, skin, stubble, scar, eyes, bodyart
-    [SerializeField] AbilityManager[] TieflingBaseAbilities;
+    [SerializeField] AbilityData[] TieflingBaseAbilities;
     [SerializeField] Color[] elfColors;
-    [SerializeField] AbilityManager[] ElfBaseAbilities;
+    [SerializeField] AbilityData[] ElfBaseAbilities;
     [SerializeField] Color[] bremriColors;
-    [SerializeField] AbilityManager[] BremriBaseAbilities;
+    [SerializeField] AbilityData[] BremriBaseAbilities;
     [SerializeField] Color[] humanSkins;
     [SerializeField] Color[] humanColors;
-    [SerializeField] AbilityManager[] HumanBaseAbilities;
+    [SerializeField] AbilityData[] HumanBaseAbilities;
 
 
     private InventoryManager inv;
@@ -201,11 +205,12 @@ public class StatsManager : MonoBehaviour
         inv = GetComponent<InventoryManager>();
         Level = 1;
         XP = 0;
-        ClothingManager[] clothes = null;
-        ClothingManager[] extraClothes = null;
-        ItemManager[] items = null;
-        SpellManager[] spells = null;
-        AbilityManager[] abilities = null;
+        ClothingData[] clothes = null;
+        ClothingData[] extraClothes = null;
+        WeaponData[] weapons = null;
+        GearData[] gear = null;
+        SpellData[] spells = null;
+        AbilityData[] abilities = null;
         GameObject[] liteClothes = null;
         switch (Class)
         {
@@ -221,7 +226,8 @@ public class StatsManager : MonoBehaviour
                 clothes = BardBaseClothes;
                 liteClothes = BardBaseliteClothes;
                 usableWeapons.Add(Weapons.Sword);
-                items = BardBaseItems;
+                gear = BardBaseGear;
+                weapons = BardBaseWeapons;
                 spells = BardBaseSpells;
                 extraClothes = BardExtraClothes;
                 break;
@@ -237,13 +243,14 @@ public class StatsManager : MonoBehaviour
                 clothes = DruidBaseClothes;
                 liteClothes = DruidBaseliteClothes;
                 usableWeapons.Add(Weapons.Staff);
-                items = DruidBaseItems;
+                gear = DruidBaseGear;
+                weapons = DruidBaseWeapons;
                 spells = DruidBaseSpells;
                 extraClothes = DruidExtraClothes;
 
                 break;
             case Classes.Warlock:
-                maxHealth += 70;//TODO just 7 not 70
+                maxHealth += 7;
                 health += 70;
                 STR += 0;
                 DEX += 1;
@@ -253,7 +260,8 @@ public class StatsManager : MonoBehaviour
                 CHA += 2;
                 clothes = WarlockBaseClothes;
                 liteClothes = WarlockBaseliteClothes;
-                items = WarlockBaseItems;
+                gear = WarlockBaseGear;
+                weapons = WarlockBaseWeapons;
                 spells = WarlockBaseSpells;
                 extraClothes = WarlockExtraClothes;
 
@@ -270,7 +278,8 @@ public class StatsManager : MonoBehaviour
                 clothes = WizardBaseClothes;
                 liteClothes = WizardBaseliteClothes;
                 usableWeapons.Add(Weapons.Staff);
-                items = WizardBaseItems;
+                gear = WizardBaseGear;
+                weapons = WizardBaseWeapons;
                 spells = WizardBaseSpells;
                 extraClothes = WizardExtraClothes;
 
@@ -385,33 +394,37 @@ public class StatsManager : MonoBehaviour
                 break;
         }
 
-        foreach (ClothingManager clothing in clothes)
+        foreach (ClothingData clothing in clothes)
         {
-            inv.addItem(null, null, null, clothing, null);
+            inv.addClothing(clothing);
             inv.SetClothingActive(clothing);
         }
-        foreach (ClothingManager clothing in extraClothes)
+        foreach (ClothingData clothing in extraClothes)
         {
-            inv.addItem(null, null, null, clothing, null);
+            inv.addClothing(clothing);
         }
-        foreach (ItemManager item in items)
+        foreach (WeaponData weapon in weapons)
         {
-            inv.addItem(item, null, null, null, null);
+            inv.addWeapon(weapon);
         }
-        foreach (SpellManager spell in spells)
+        foreach (GearData item in gear)
         {
-            inv.spellInv.Add(spell);
+            inv.addGear(item);
+        }
+        foreach (SpellData spell in spells)
+        {
+            inv.addSpell(spell);
         }
 
 
-        inv.SetClothingActiveLite(liteClothes[0].name, ClothingManager.ClothingSlot.Face);
+        inv.SetClothingActiveLite(liteClothes[0].name, ClothingData.ClothingSlot.Face);
         if (liteClothes[1] != null)
         {
-            inv.SetClothingActiveLite(liteClothes[1].name, ClothingManager.ClothingSlot.Hair);
+            inv.SetClothingActiveLite(liteClothes[1].name, ClothingData.ClothingSlot.Hair);
         }
         if (bodyType == BodyTypes.Male && liteClothes[2] != null)
         {
-            inv.SetClothingActiveLite(liteClothes[2].name, ClothingManager.ClothingSlot.Facial_Hair);
+            inv.SetClothingActiveLite(liteClothes[2].name, ClothingData.ClothingSlot.Facial_Hair);
         }
 
         switch (Race)
@@ -503,9 +516,9 @@ public class StatsManager : MonoBehaviour
                 break;
         }
 
-        foreach (AbilityManager ability in abilities)
+        foreach (AbilityData ability in abilities)
         {
-            inv.abilityInv.Add(ability);
+            inv.addAbility(ability);
         }
 
         switch (Class)

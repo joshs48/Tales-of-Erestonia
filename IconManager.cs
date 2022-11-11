@@ -49,9 +49,10 @@ public class IconManager : MonoBehaviour
 
     public string Location;// hands, right hand, head, legs...
 
-    public ItemManager Item;
-    public AmmoManager Ammo;
-    public SpellManager Spell;
-    public ClothingManager Clothing;
-    public AbilityManager Ability;
+    public WeaponData Weapon;
+    public GearData Gear;
+    public AmmoData Ammo;
+    public SpellData Spell;
+    public ClothingData Clothing;
+    public AbilityData Ability;
 }
