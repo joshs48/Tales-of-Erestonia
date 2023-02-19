@@ -287,12 +287,21 @@ public class AICharacter : MonoBehaviour
                 GetComponent<StatsManager>().maxStamina = 3;
                 GetComponent<StatsManager>().stamina = 3;
                 GetComponent<StatsManager>().staminaRechargeSpeed = 1;
+                cooldown = 4;
                 break;
             case "FemalePirate":
                 anim.SetInteger("Enemy", 32);
                 GetComponent<StatsManager>().maxStamina = 3;
                 GetComponent<StatsManager>().stamina = 3;
                 GetComponent<StatsManager>().staminaRechargeSpeed = 1;
+                cooldown = 4;
+                break;
+            case "DwarfSoldier":
+                anim.SetInteger("Enemy", 33);
+                GetComponent<StatsManager>().maxStamina = 2;
+                GetComponent<StatsManager>().stamina = 2;
+                GetComponent<StatsManager>().staminaRechargeSpeed = 1;
+                cooldown = 4;
                 break;
         }
         stopDist = agent.stoppingDistance;

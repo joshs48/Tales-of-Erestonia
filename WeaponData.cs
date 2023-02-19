@@ -22,8 +22,8 @@ public class WeaponData : ScriptableObject
         Crossbow,
         Shield,
         Staff,
-        Sword
-        
+        Sword,
+        Hammer
     };
 
     public enum Owner

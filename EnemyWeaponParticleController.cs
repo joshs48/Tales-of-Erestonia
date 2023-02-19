@@ -100,7 +100,7 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
             {
                 if (stateInfo.IsName("Staff Hit 2"))
                 {
-                    GameObject startPos = animator.gameObject.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").transform.Find("SM_Wep_Goblin_Staff_01").transform.Find("Magic Mount").gameObject;
+                    GameObject startPos = animator.gameObject.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").transform.Find("Warchief's Staff").transform.Find("Magic Mount").gameObject;
                     startPos.transform.eulerAngles = Vector3.forward;
                     animator.gameObject.GetComponent<AICharacter>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, startPos, animator.gameObject));
                 }
@@ -158,8 +158,8 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
 
         EnemyProjectileManager trailepm = newShards.transform.Find("FX_Shard" + newShards.name.Substring(0, newShards.name.IndexOf(" ")) + "_Smaller_Trail_01").gameObject.AddComponent<EnemyProjectileManager>();
         EnemyProjectileManager explosionepm = newShards.transform.Find("FX_Shard" + newShards.name.Substring(0, newShards.name.IndexOf(" ")) + "_Explosion_01").gameObject.AddComponent<EnemyProjectileManager>();
-        SpellData trailsm = trailepm.gameObject.GetComponent<SpellData>();
-        SpellData explosionsm = trailepm.gameObject.GetComponent<SpellData>();
+        SpellData trailsm = trailepm.gameObject.GetComponent<Spell>().data;
+        SpellData explosionsm = trailepm.gameObject.GetComponent<Spell>().data;
 
         var collision = trailepm.gameObject.GetComponent<ParticleSystem>().collision;
         collision.collidesWith |= (1 << 3);
@@ -188,7 +188,7 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
             GeyserPos = Vector3.MoveTowards(GeyserPos, target, distanceBetween);
             GameObject newGeyser = Instantiate(geyser, GeyserPos, Quaternion.Euler(0, 0, 0));
             EnemyProjectileManager epm = newGeyser.AddComponent<EnemyProjectileManager>();
-            SpellData sm = newGeyser.GetComponent<SpellData>();
+            SpellData sm = newGeyser.GetComponent<Spell>().data;
             var collision = newGeyser.GetComponent<ParticleSystem>().collision;
             collision.collidesWith |= (1 << 3);
 

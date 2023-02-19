@@ -1082,7 +1082,7 @@ public class InventoryUIRunner : MonoBehaviour
             }
         }
         //if you equip a bow, any right weapon goes away
-        if (eqSlot.Equals("L_weapon") && im.activeWeaponR != null && icon.GetComponent<IconManager>().objectType != IconManager.Type.Shield)
+        if (icon.GetComponent<IconManager>().objectType == IconManager.Type.Bow && eqSlot.Equals("L_weapon") && im.activeWeaponR != null && icon.GetComponent<IconManager>().objectType != IconManager.Type.Shield)
         {
             GameObject prevIcon = GameObject.Find("Canvas").transform.Find("Character Box").transform.Find("R_weapon slot").transform.GetChild(1).gameObject;
 

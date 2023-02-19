@@ -24,7 +24,8 @@ public class StatsManager : MonoBehaviour
         Tiefling,
         Elf,
         Human,
-        Bremri
+        Bremri,
+        Dwarf
     };
 
     public enum BodyTypes {

@@ -15,7 +15,8 @@ public class IconManager : MonoBehaviour
         Potion,
         Spell,
         Ability,
-        Clothing
+        Clothing,
+        Hammer
     };
 
     public enum Rarity

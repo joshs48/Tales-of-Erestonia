@@ -162,8 +162,18 @@ public class CharacterAndWeaponController : MonoBehaviour
             weaponRObject = Instantiate(newRWeapon.prefab, transform);
             weaponRObject.SetActive(true);
             weaponRObject.transform.parent = transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R");
+
             weaponRObject.transform.localPosition = transform.Find(weaponRType + " Mount").localPosition;
             weaponRObject.transform.localRotation = transform.Find(weaponRType + " Mount").localRotation;
+            if (weaponRType == "Staff")
+            {
+                if (newRWeapon.weaponName == "Staff of the Fallen" || newRWeapon.weaponName == "Medusa's Staff" || newRWeapon.weaponName == "Staff of the Trees")
+                {
+                    weaponRObject.transform.localPosition = transform.Find("OffsetStaff Mount").localPosition;
+                    weaponRObject.transform.localRotation = transform.Find("OffsetStaff Mount").localRotation;
+                }
+            }
+            
 
             if (newRWeapon.name == "Sword Straight")
             {
