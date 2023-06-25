@@ -482,7 +482,7 @@ public class MainMenuSetup : MonoBehaviour
         spotLight.transform.localPosition = spotlightPos;
         spotLight.SetActive(true);
 
-        playerStats.SetUpStatsAndInv();
+        player.GetComponent<PlayerSetup>().SetUpStatsAndInv(playerStats.Class, playerStats.Race);
         player.transform.position = new Vector3(4.27f, 1.19f, 0);
         yield return new WaitUntil(() => GetComponent<PlayerControl>().jump);
         

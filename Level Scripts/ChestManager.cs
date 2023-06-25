@@ -11,17 +11,7 @@ public class ChestManager : MonoBehaviour
 
     private bool canOpen = false;
     private bool isOpened = false;
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     IEnumerator Open(GameObject player)
     {
@@ -42,8 +32,8 @@ public class ChestManager : MonoBehaviour
 
                 for (int i = 0; i < 100; i++)
                 {
-                    lid.transform.Rotate(Vector3.right, -0.5f);
-                    yield return new WaitForSeconds(0.004f);
+                    lid.transform.Rotate(Vector3.right, -0.75f);
+                    yield return new WaitForSeconds(0.001f);
                 }
             }
             isOpened = true;
@@ -77,12 +67,25 @@ public class ChestManager : MonoBehaviour
         if (weapon != null)
         {
             chestWeapons.Remove(weapon);
-            Destroy(transform.Find(weapon.name).gameObject);
+            try
+            {
+                Destroy(transform.Find(weapon.name).gameObject);
+            }
+            catch
+            {
+                Debug.LogError("No game world weapon created");
+            }
         }
-        if (weapon != null)
+        if (gear != null)
         {
             chestGear.Remove(gear);
-            Destroy(transform.Find(gear.name).gameObject);
+            try
+            {
+                Destroy(transform.Find(gear.name).gameObject);
+            } catch
+            {
+
+            }
         }
         if (ammo != null)
         {

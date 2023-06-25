@@ -37,15 +37,17 @@ public class Weapon : MonoBehaviour
 
         if (anim.GetCurrentAnimatorStateInfo(0).tagHash != GroundedTagHash && anim.GetCurrentAnimatorStateInfo(0).tagHash != AirborneTagHash)// Checks to see if it's not in grounded or jumping
         {
-            if (other.gameObject.layer.Equals(6) && Parent.layer.Equals(3) || (other.gameObject.layer.Equals(3) && Parent.layer.Equals(6)))//This is the enemy and player layer, it checks if they're an enemy
+            if (other.gameObject.layer.Equals(6) && (Parent.layer.Equals(3) || Parent.layer.Equals(9)) || (other.gameObject.layer.Equals(3) || other.gameObject.layer.Equals(9)) && (Parent.layer.Equals(6)))//This is the enemy and player layer, it checks if they're an enemy
             {
+
                 if (anim.GetCurrentAnimatorStateInfo(0).tagHash != PrevState)
                 {
+
                     StatsManager statsManager = other.gameObject.GetComponent<StatsManager>();
-                    statsManager.DealDamage(data.damageVal);
+                    statsManager.DealDamage(data.damageVal, Parent);
                     if (data.damageEffects.Length > 0)
                     {
-                        statsManager.EffectDuration = data.effectDuration;
+                        statsManager.EffectDuration = data.effectDuration; 
                         statsManager.DamagePerSec = data.damagePerSec;
                         statsManager.effect = data.damageEffect;
 

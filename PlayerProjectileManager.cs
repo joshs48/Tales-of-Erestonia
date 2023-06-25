@@ -36,7 +36,7 @@ public class PlayerProjectileManager : MonoBehaviour
                 
 
                 StatsManager statsManager = other.GetComponent<StatsManager>();
-                statsManager.DealDamage(damageVal);
+                statsManager.DealDamage(damageVal, null);
 
 
                 if (damageEffects.Length > 0)
@@ -70,7 +70,7 @@ public class PlayerProjectileManager : MonoBehaviour
 
 
                 StatsManager statsManager = other.gameObject.GetComponent<StatsManager>();
-                statsManager.DealDamage(damageVal);
+                statsManager.DealDamage(damageVal, null);
 
 
                 if (damageEffects.Length > 0)

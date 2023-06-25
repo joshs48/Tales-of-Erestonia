@@ -29,12 +29,12 @@ public class EnemyProjectileManager : MonoBehaviour
     {
         if (other.GetComponent<ParticleSystem>() == null && !other.layer.Equals(6) && !gameObject.Equals(prevParticles))
         {
-            if (other.gameObject.layer.Equals(3))
+            if (other.gameObject.layer.Equals(3) || other.gameObject.layer.Equals(9))
             {
                 
                 prevParticles = gameObject;
                 StatsManager statsManager = other.GetComponent<StatsManager>();
-                statsManager.DealDamage(damageVal);
+                statsManager.DealDamage(damageVal, null);
                 
 
                 if (damageEffects.Length > 0)

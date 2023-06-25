@@ -319,6 +319,7 @@ public class UIUpdater : MonoBehaviour
     {
         game.XPBar.GetComponent<Slider>().maxValue = game.playerStats.nextLevelXP;
         game.XPBar.GetComponent<Slider>().value = game.playerStats.XP;
+        game.XPBar.GetComponent<Slider>().minValue = game.playerStats.minLevelXP;
     }
 
     public static void UpdateCharacterStatsBar()
@@ -2095,7 +2096,7 @@ public class InventoryUIRunner : MonoBehaviour
                         game.selectedClothingColors = Instantiate(game.selected, currIcon.transform.parent, false);
                         game.selectedClothingColors.transform.SetAsLastSibling();
                         game.selectedClothingColors.transform.parent = currIcon.transform;*/
-                        game.playerStats.SetPlayerColors(currIcon.transform.GetChild(0).GetComponent<MeshRenderer>().material.GetColor("_BaseColor"), currIcon.transform.GetChild(1).GetComponent<MeshRenderer>().material.GetColor("_BaseColor"));
+                        game.player.GetComponent<PlayerSetup>().SetPlayerColors(currIcon.transform.GetChild(0).GetComponent<MeshRenderer>().material.GetColor("_BaseColor"), currIcon.transform.GetChild(1).GetComponent<MeshRenderer>().material.GetColor("_BaseColor"));
                         break;
                 }
 
@@ -2554,6 +2555,10 @@ public class ChestUIRunner : MonoBehaviour
         game.csSelector.SetActive(true);
         SetCSSelectorPos(currentPos.x, currentPos.y);
 
+        game.selectionContainer.SetActive(true);
+        game.mainUIBackground.SetActive(true);
+        game.characterBox.SetActive(true);
+
         int prevAltMove = pc.altMove;
         GameManager.Tabs prevTab = game.currTab;
         double prevMoveMag = 1;
@@ -2568,7 +2573,11 @@ public class ChestUIRunner : MonoBehaviour
 
             GameObject tabSelector = null;
 
-            if (game.selectionContainer.transform.Find("Weapon Tab").transform.Find("Tab selector") != null)
+            if (game.selectionContainer.transform.Find("Clothing Tab").transform.Find("Tab selector") != null)
+            {
+                tabSelector = game.selectionContainer.transform.Find("Clothing Tab").transform.Find("Tab selector").gameObject;
+            }
+            else if (game.selectionContainer.transform.Find("Weapon Tab").transform.Find("Tab selector") != null)
             {
                 tabSelector = game.selectionContainer.transform.Find("Weapon Tab").transform.Find("Tab selector").gameObject;
             }
@@ -2583,6 +2592,14 @@ public class ChestUIRunner : MonoBehaviour
             else if (game.selectionContainer.transform.Find("Gear Tab").transform.Find("Tab selector") != null)
             {
                 tabSelector = game.selectionContainer.transform.Find("Gear Tab").transform.Find("Tab selector").gameObject;
+            }
+            else if (game.selectionContainer.transform.Find("Abilities Tab").transform.Find("Tab selector") != null)
+            {
+                tabSelector = game.selectionContainer.transform.Find("Abilities Tab").transform.Find("Tab selector").gameObject;
+            }
+            else if (game.selectionContainer.transform.Find("Customize Tab").transform.Find("Tab selector") != null)
+            {
+                tabSelector = game.selectionContainer.transform.Find("Customize Tab").transform.Find("Tab selector").gameObject;
             }
 
             if (game.currTab == GameManager.Tabs.Weapons && tabSelector.transform.parent.name != "Weapon Tab")
@@ -2679,7 +2696,7 @@ public class ChestUIRunner : MonoBehaviour
 
                     if (icon.GetComponent<IconManager>().Weapon != null)
                     {
-                        ds.transform.Find("Item Name").gameObject.GetComponent<TextMeshProUGUI>().text = currWeaponData.weaponName;
+                        ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currWeaponData.weaponName;
                         ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currWeaponData.weaponDescription;
 
                         TextMeshProUGUI mainValtmp = ds.transform.Find("Main Value").transform.Find("Main Value text").gameObject.GetComponent<TextMeshProUGUI>();
@@ -2722,7 +2739,7 @@ public class ChestUIRunner : MonoBehaviour
                     }
                     else if (icon.GetComponent<IconManager>().Gear != null)
                     {
-                        ds.transform.Find("Item Name").gameObject.GetComponent<TextMeshProUGUI>().text = currGearData.gearName;
+                        ds.transform.Find("Name text").gameObject.GetComponent<TextMeshProUGUI>().text = currGearData.gearName;
                         ds.transform.Find("Description text").gameObject.GetComponent<TextMeshProUGUI>().text = currGearData.gearDescription;
 
                         TextMeshProUGUI mainValtmp = ds.transform.Find("Main Value").transform.Find("Main Value text").gameObject.GetComponent<TextMeshProUGUI>();

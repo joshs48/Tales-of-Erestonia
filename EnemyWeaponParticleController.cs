@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyWeaponParticleController : StateMachineBehaviour
 {
     private int weaponType;
-    private int enemyType;
+    private int enemyID;
     private static ParticleSystem particles1;
     private static ParticleSystem particles2;
 
@@ -21,7 +21,7 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
     {
 
         weaponType = animator.GetInteger("Weapon Type");
-        enemyType = animator.GetInteger("Enemy");
+        enemyID = animator.GetInteger("AI_ID");
 
         handR = animator.gameObject.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_R").transform.Find("Shoulder_R").transform.Find("Elbow_R").transform.Find("Hand_R").gameObject;
         handL = animator.gameObject.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").transform.Find("Spine_03").transform.Find("Clavicle_L").transform.Find("Shoulder_L").transform.Find("Elbow_L").transform.Find("Hand_L").gameObject;
@@ -29,7 +29,7 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
 
         if (weaponType == 8)
         {
-            if (enemyType == 4 || enemyType == 1 || enemyType == 31)
+            if (enemyID == 4 || enemyID == 1 || enemyID == 31)
             {
                 if (stateInfo.IsName("Magic Grounded") || stateInfo.IsName("Magic Flying"))
                 {
@@ -43,21 +43,21 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
                     animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, particles2.gameObject, animator.gameObject));
                 }
             }
-            if (enemyType == 17)
+            if (enemyID == 17)
             {
                 if (stateInfo.IsName("Magic Geyser Path"))
                 {
-                    animator.gameObject.GetComponent<StatsManager>().StartCoroutine(GeyserPath(ShootDelay, 0.9f, 3f, animator.gameObject.GetComponent<AICharacter>().FindNearestPlayer().transform.position, createParticle1, animator.gameObject.transform.position));
+                    animator.gameObject.GetComponent<StatsManager>().StartCoroutine(GeyserPath(ShootDelay, 0.9f, 3f, animator.gameObject.GetComponent<AICharacter>().FindNearestTarget(false).transform.position, createParticle1, animator.gameObject.transform.position));
                 } else if (stateInfo.IsName("Beam Magic 2"))
                 {
                     animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.transform.Find("Root").transform.Find("Hips").gameObject, animator.gameObject));
                 }
             }
-            if (enemyType == 22)
+            if (enemyID == 22)
             {
                 if (stateInfo.IsName("Magic Fire"))
                 {
-                    animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.GetComponent<AICharacter>().FindNearestPlayer().gameObject, animator.gameObject));
+                    animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.GetComponent<AICharacter>().FindNearestTarget(false).gameObject, animator.gameObject));
                 } else if (stateInfo.IsName("Frozen breath"))
                 {
                     animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.transform.Find("Root").transform.Find("Hips").transform.Find("Spine_01").transform.Find("Spine_02").gameObject, animator.gameObject)); 
@@ -66,7 +66,7 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
             }
 
 
-            if (enemyType == 23)
+            if (enemyID == 23)
             {
                 if (stateInfo.IsName("Magic Grounded") || stateInfo.IsName("Magic Flying"))
                 {
@@ -81,7 +81,7 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
                 }
             }
 
-            if ((enemyType >= 28 && enemyType <= 30) || enemyType == 7)
+            if ((enemyID >= 28 && enemyID <= 30) || enemyID == 7)
             {
                 if (stateInfo.IsName("Rock Path") || stateInfo.IsName("Ice Path") || stateInfo.IsName("Vine Path") || stateInfo.IsName("Crystal Path"))
                 {
@@ -89,14 +89,14 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
                 }
                 if (stateInfo.IsName("Rock Explosion") || stateInfo.IsName("Ice Explosion") || stateInfo.IsName("Vine Explosion") || stateInfo.IsName("Crystal Explosion"))
                 {
-                    animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.GetComponent<AICharacter>().FindNearestPlayer().gameObject, animator.gameObject));
+                    animator.gameObject.GetComponent<StatsManager>().StartCoroutine(LaunchProjectile(ShootDelay, createParticle1, animator.gameObject.GetComponent<AICharacter>().FindNearestTarget(false).gameObject, animator.gameObject));
 
                 }
             }
             
         } else if (weaponType == 5)
         {
-            if (enemyType == 21)
+            if (enemyID == 21)
             {
                 if (stateInfo.IsName("Staff Hit 2"))
                 {
@@ -134,12 +134,15 @@ public class EnemyWeaponParticleController : StateMachineBehaviour
             newProjectile = Instantiate(projectile, startPos.transform.position, startRot.transform.rotation);
             var collision = newProjectile.GetComponent<ParticleSystem>().collision;
             collision.collidesWith |= (1 << 3);
+            collision.collidesWith |= (1 << 9);
         }
         else
         {
             newProjectile = Instantiate(projectile);
             var collision = newProjectile.GetComponent<ParticleSystem>().collision;
             collision.collidesWith |= (1 << 3);
+            collision.collidesWith |= (1 << 9);
+
         }
         EnemyProjectileManager epm = newProjectile.AddComponent<EnemyProjectileManager>();
         SpellData sm = newProjectile.GetComponent<Spell>().data;
